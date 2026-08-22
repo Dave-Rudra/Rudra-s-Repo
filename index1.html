@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobeTrotter - Travel App</title>
+    <style>
+        /* CSS for Graphics and Background */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            cursor: pointer;
+        }
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            padding: 15px;
+            border-top: 5px solid #2a5298;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            color: #2a5298;
+        }
+        .card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .group-header {
+            width: 100%;
+            font-size: 20px;
+            color: #e74c3c;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+            border-bottom: 1px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✈️ GlobeTrotter - Travel Planner</h1>
+    
+    <div class="controls">
+        <!-- Filter Option -->
+        <div class="control-group">
+            <label for="filterRegion">Filter by Region:</label>
+            <select id="filterRegion" onchange="renderData()">
+                <option value="All">All Regions</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia">Asia</option>
+            </select>
+        </div>
+
+        <!-- Sort Option -->
+        <div class="control-group">
+            <label for="sortBy">Sort By:</label>
+            <select id="sortBy" onchange="renderData()">
+                <option value="name">Name (A-Z)</option>
+                <option value="priceLow">Budget (Low to High)</option>
+                <option value="rating">Rating (Highest)</option>
+            </select>
+        </div>
+
+        <!-- Group Option -->
+        <div class="control-group">
+            <label for="groupBy">Group By:</label>
+            <select id="groupBy" onchange="renderData()">
+                <option value="none">None</option>
+                <option value="country">Country</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="destinationsContainer" class="destinations-grid">
+        <!-- Data will be injected here by JavaScript -->
+    </div>
+</div>
+
+<script>
+    // Sample Data based on your app idea
+    const destinations = [
+        { name: 'Paris', country: 'France', region: 'Europe', budget: 1500, rating: 4.8 },
+        { name: 'Tokyo', country: 'Japan', region: 'Asia', budget: 2000, rating: 4.9 },
+        { name: 'Rome', country: 'Italy', region: 'Europe', budget: 1200, rating: 4.7 },
+        { name: 'Bangkok', country: 'Thailand', region: 'Asia', budget: 800, rating: 4.5 },
+        { name: 'Kyoto', country: 'Japan', region: 'Asia', budget: 1800, rating: 4.8 },
+        { name: 'Venice', country: 'Italy', region: 'Europe', budget: 1400, rating: 4.6 }
+    ];
+
+    function renderData() {
+        const filterVal = document.getElementById('filterRegion').value;
+        const sortVal = document.getElementById('sortBy').value;
+        const groupVal = document.getElementById('groupBy').value;
+        const container = document.getElementById('destinationsContainer');
+        
+        container.innerHTML = ''; // Clear current data
+
+        // 1. FILTERING
+        let filteredData = destinations.filter(item => {
+            if (filterVal === 'All') return true;
+            return item.region === filterVal;
+        });
+
+        // 2. SORTING
+        filteredData.sort((a, b) => {
+            if (sortVal === 'name') return a.name.localeCompare(b.name);
+            if (sortVal === 'priceLow') return a.budget - b.budget;
+            if (sortVal === 'rating') return b.rating - a.rating;
+        });
+
+        // 3. GROUPING & DISPLAYING
+        if (groupVal === 'country') {
+            const grouped = {};
+            filteredData.forEach(item => {
+                if (!grouped[item.country]) grouped[item.country] = [];
+                grouped[item.country].push(item);
+            });
+
+            for (const country in grouped) {
+                container.innerHTML += `<div class="group-header">${country}</div>`;
+                grouped[country].forEach(item => {
+                    container.innerHTML += createCard(item);
+                });
+            }
+        } else {
+            // Display without grouping
+            filteredData.forEach(item => {
+                container.innerHTML += createCard(item);
+            });
+        }
+    }
+
+    function createCard(item) {
+        return `
+            <div class="card">
+                <h3>${item.name}</h3>
+                <p><strong>🌍 Region:</strong> ${item.region}</p>
+                <p><strong>📍 Country:</strong> ${item.country}</p>
+                <p><strong>💰 Est. Budget:</strong> $${item.budget}</p>
+                <p><strong>⭐ Rating:</strong> ${item.rating} / 5</p>
+            </div>
+        `;
+    }
+
+    // Initial Render
+    renderData();
+</script>
+
+</body>
+</html>

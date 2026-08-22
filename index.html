@@ -78,13 +78,13 @@
       <div class="bg-white border border-slate-300 rounded-md p-8 shadow-sm flex flex-col items-center">
         <form onsubmit="handleLogin(event)" class="w-full space-y-4">
           <div>
-            <input type="email" id="loginEmail" required placeholder="Username / Email" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
+            <input type="email" id="loginEmail" required placeholder="Email Address" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
           </div>
           <div>
             <input type="password" id="loginPassword" required placeholder="Password" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
           </div>
           <div class="pt-4 flex justify-center">
-            <button type="submit" class="border border-slate-400 text-slate-800 font-semibold px-8 py-2 rounded-sm hover:bg-slate-50 transition">Login Button</button>
+            <button type="submit" class="border border-slate-400 text-slate-800 font-semibold px-8 py-2 rounded-sm hover:bg-slate-50 transition">Log In</button>
           </div>
         </form>
       </div>
@@ -147,7 +147,7 @@
 
       <!-- Previous Trips -->
       <div class="relative pb-12">
-        <h2 class="text-lg font-bold border-b border-slate-300 pb-2 mb-4 text-slate-800">Previous Trips</h2>
+        <h2 class="text-lg font-bold border-b border-slate-300 pb-2 mb-4 text-slate-800">Your Recent Trips</h2>
         <div id="dashTripsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         
         <!-- FAB button -->
@@ -187,7 +187,7 @@
     <!-- SCREEN 7: USER PROFILE PAGE (PHOTO REMOVED) -->
     <section id="view-profile" class="tab-view hidden space-y-8">
       <div class="w-full bg-white border border-slate-300 rounded-md p-6">
-        <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only upon Signup)</h3>
+        <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only)</h3>
         
         <!-- Notice if not logged in -->
         <div id="profileLoggedOutMsg" class="text-sm text-slate-500 mb-4 italic">
@@ -314,7 +314,7 @@
       </form>
 
       <div class="border-t border-slate-300 pt-4 flex-1">
-        <h4 class="text-sm font-bold text-slate-700 mb-4">Suggestion for Places To Visit / Activities To perform</h4>
+        <h4 class="text-sm font-bold text-slate-700 mb-4">Suggestion for Places To Visit</h4>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="modalSuggestionsGrid"></div>
       </div>
     </div>
@@ -417,55 +417,66 @@
       { name: 'Baga Beach Watersports', city: 'Goa', category: 'Adventure', cost: 1500 }
     ];
 
-    // State Management
-    let currentUser = JSON.parse(localStorage.getItem('globetrotter_user')) || null;
-    let trips = JSON.parse(localStorage.getItem('globetrotter_trips')) || [
-      {
-        id: 't-1',
-        title: 'Euro Odyssey',
-        startDate: '2026-09-10',
-        endDate: '2026-09-18',
-        image: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400',
-        isCompleted: false,
-        stops: []
-      }
-    ];
-
+    // ----- DATABASE SIMULATION (LocalStorage) -----
+    let usersDB = JSON.parse(localStorage.getItem('gt_users_db')) || [];
+    let tripsDB = JSON.parse(localStorage.getItem('gt_trips_db')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('gt_current_user')) || null;
+    let myTrips = []; 
     let activeTripIndex = 0;
 
     // ----- AUTHENTICATION LOGIC -----
     function handleSignup(e) {
       e.preventDefault();
-      const user = {
+      const email = document.getElementById('regEmail').value.trim();
+      const password = prompt("Create a password for your account:"); 
+      
+      if(!password) return alert("Password is required to sign up!");
+
+      const existingUser = usersDB.find(u => u.email === email);
+      if (existingUser) return alert("An account with this email already exists! Please log in.");
+
+      const newUser = {
         firstName: document.getElementById('regFirstName').value,
         lastName: document.getElementById('regLastName').value,
-        email: document.getElementById('regEmail').value
+        email: email,
+        password: password 
       };
       
-      localStorage.setItem('globetrotter_user', JSON.stringify(user));
-      currentUser = user;
-      updateAuthState();
-      switchTab('dashboard');
+      usersDB.push(newUser);
+      localStorage.setItem('gt_users_db', JSON.stringify(usersDB));
+      loginUser(newUser);
       e.target.reset();
     }
 
     function handleLogin(e) {
       e.preventDefault();
-      // Mock login: Just taking the email as the identifier for the prototype
-      const email = document.getElementById('loginEmail').value;
-      const user = { firstName: 'User', lastName: '', email: email };
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      const user = usersDB.find(u => u.email === email && u.password === password);
       
-      localStorage.setItem('globetrotter_user', JSON.stringify(user));
+      if (user) {
+        loginUser(user);
+        e.target.reset();
+      } else {
+        alert("Invalid email or password. Please try again or sign up.");
+      }
+    }
+
+    function loginUser(user) {
       currentUser = user;
+      localStorage.setItem('gt_current_user', JSON.stringify(currentUser));
       updateAuthState();
+      loadMyTrips();
       switchTab('dashboard');
-      e.target.reset();
     }
 
     function handleLogout() {
-      localStorage.removeItem('globetrotter_user');
       currentUser = null;
+      localStorage.removeItem('gt_current_user');
+      myTrips = [];
       updateAuthState();
+      loadMyTrips();
       switchTab('dashboard');
     }
 
@@ -475,30 +486,25 @@
       const welcomeText = document.getElementById('nav-welcome-text');
       const profileMsg = document.getElementById('profileLoggedOutMsg');
 
-      // Profile Input Fields
       const fNameInput = document.getElementById('profileFirstName');
       const lNameInput = document.getElementById('profileLastName');
       const emailInput = document.getElementById('profileEmail');
 
       if (currentUser) {
-        // Switch Navbar
         loggedOutNav.classList.add('hidden');
         loggedInNav.classList.remove('hidden');
         loggedInNav.classList.add('flex');
         welcomeText.innerText = `Hi, ${currentUser.firstName}!`;
         
-        // Update & Lock Profile Page Details
         profileMsg.classList.add('hidden');
         fNameInput.value = currentUser.firstName;
         lNameInput.value = currentUser.lastName;
         emailInput.value = currentUser.email;
       } else {
-        // Switch Navbar
         loggedInNav.classList.add('hidden');
         loggedInNav.classList.remove('flex');
         loggedOutNav.classList.remove('hidden');
         
-        // Revert Profile Page to Guest
         profileMsg.classList.remove('hidden');
         fNameInput.value = 'Guest';
         lNameInput.value = 'User';
@@ -506,7 +512,6 @@
       }
     }
 
-    // Function to check if user is logged in before opening modals
     function requireAuth(modalId) {
       if (!currentUser) {
         alert("You must be logged in to plan a trip.");
@@ -517,10 +522,19 @@
     }
 
     // ----- APP STATE LOGIC -----
-    function saveState() {
-      localStorage.setItem('globetrotter_trips', JSON.stringify(trips));
+    function loadMyTrips() {
+      if (currentUser) {
+        myTrips = tripsDB.filter(t => t.ownerEmail === currentUser.email);
+      } else {
+        myTrips = [];
+      }
       renderDashboard();
-      renderMyTrips();
+      renderMyTripsView();
+    }
+
+    function saveState() {
+      localStorage.setItem('gt_trips_db', JSON.stringify(tripsDB));
+      loadMyTrips(); 
     }
 
     // Tabs
@@ -535,7 +549,7 @@
       if (activeBtn) activeBtn.classList.add('text-slate-900', 'border-b-2', 'border-slate-800');
 
       if (tabId === 'dashboard') renderDashboard();
-      if (tabId === 'my-trips') renderMyTrips();
+      if (tabId === 'my-trips') renderMyTripsView();
       if (tabId === 'explore') renderCatalog();
       if (tabId === 'profile') renderProfileGrid();
     }
@@ -565,7 +579,7 @@
         </div>
       `).join('');
 
-      document.getElementById('dashTripsGrid').innerHTML = trips.slice(0, 3).map((trip, idx) => `
+      document.getElementById('dashTripsGrid').innerHTML = myTrips.slice(0, 3).map((trip, idx) => `
         <div onclick="openTripWorkspace(${idx})" class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer flex flex-col h-48 bg-white">
           <div class="h-2/3 bg-slate-200">
              <img src="${trip.image}" class="w-full h-full object-cover" />
@@ -575,19 +589,19 @@
              <p class="text-xs text-slate-500">${trip.startDate}</p>
           </div>
         </div>
-      `).join('');
+      `).join('') || `<div class="col-span-3 text-center text-slate-500 py-8 border border-dashed border-slate-300 rounded-md bg-white">No previous trips found. Sign up and create one!</div>`;
     }
 
     // 2. Render My Trips
-    function renderMyTrips() {
-      const upcoming = trips.filter(t => !t.isCompleted);
-      const completed = trips.filter(t => t.isCompleted);
+    function renderMyTripsView() {
+      const upcoming = myTrips.filter(t => !t.isCompleted);
+      const completed = myTrips.filter(t => t.isCompleted);
 
       const renderList = (list) => list.map(t => `
-        <div onclick="openTripWorkspace(${trips.indexOf(t)})" class="w-full bg-white border border-slate-300 rounded-md p-4 flex justify-between items-center hover:shadow-md cursor-pointer">
+        <div onclick="openTripWorkspace(${myTrips.indexOf(t)})" class="w-full bg-white border border-slate-300 rounded-md p-4 flex justify-between items-center hover:shadow-md cursor-pointer">
            <div>
               <h4 class="font-bold text-slate-800">${t.title}</h4>
-              <p class="text-xs text-slate-500">Data Range: ${t.startDate} to ${t.endDate}</p>
+              <p class="text-xs text-slate-500">Date Range: ${t.startDate} to ${t.endDate}</p>
            </div>
            <div class="text-right">
               <span class="border border-slate-300 px-3 py-1 rounded text-xs font-semibold bg-slate-50">Budget: ₹${calculateTotalCost(t)}</span>
@@ -601,14 +615,14 @@
 
     // 3. Render Profile
     function renderProfileGrid() {
-      const upcoming = trips.filter(t => !t.isCompleted);
-      const completed = trips.filter(t => t.isCompleted);
+      const upcoming = myTrips.filter(t => !t.isCompleted);
+      const completed = myTrips.filter(t => t.isCompleted);
 
       const generateGrid = (list) => list.map(t => `
         <div class="border border-slate-300 rounded-md p-2 text-center bg-white">
            <div class="h-24 bg-slate-200 rounded-sm mb-2"><img src="${t.image}" class="w-full h-full object-cover rounded-sm"/></div>
            <h5 class="text-xs font-bold truncate mb-2">${t.title}</h5>
-           <button onclick="openTripWorkspace(${trips.indexOf(t)})" class="text-[10px] uppercase border border-slate-400 px-3 py-1 rounded-sm hover:bg-slate-50 font-bold">View</button>
+           <button onclick="openTripWorkspace(${myTrips.indexOf(t)})" class="text-[10px] uppercase border border-slate-400 px-3 py-1 rounded-sm hover:bg-slate-50 font-bold">View</button>
         </div>
       `).join('');
 
@@ -665,10 +679,19 @@
       `).join('') || `<div class="text-sm text-slate-400 p-4 border border-slate-300 text-center bg-white rounded-md">No matching options found.</div>`;
     }
 
+    function renderModalSuggestions() {
+      document.getElementById('modalSuggestionsGrid').innerHTML = PRESET_CITIES.map(c => `
+         <div class="border border-slate-300 rounded-sm p-2 text-center h-24 relative overflow-hidden">
+            <img src="${c.image}" class="absolute inset-0 w-full h-full object-cover opacity-50"/>
+            <span class="relative z-10 font-bold text-slate-900 text-sm bg-white/80 px-2 py-1 rounded">${c.name}</span>
+         </div>
+      `).join('');
+    }
+
     // 5. Render Detail Timeline
     function openTripWorkspace(idx) {
       activeTripIndex = idx;
-      const trip = trips[idx];
+      const trip = myTrips[idx];
       document.getElementById('detailTripTitle').innerText = `Itinerary: ${trip.title}`;
       document.getElementById('detailTripTotal').innerText = `Total Estimated Budget: ₹${calculateTotalCost(trip)}`;
       
@@ -677,7 +700,7 @@
     }
 
     function renderTimeline() {
-      const trip = trips[activeTripIndex];
+      const trip = myTrips[activeTripIndex];
       let html = '';
 
       if (trip.stops.length === 0) {
@@ -725,15 +748,17 @@
     // Data Handlers
     function handleCreateTrip(e) {
       e.preventDefault();
-      trips.unshift({
+      const newTrip = {
         id: 't-' + Date.now(),
+        ownerEmail: currentUser.email, // Tying the trip to the logged-in user
         title: document.getElementById('formTripTitle').value,
         startDate: document.getElementById('formTripStart').value,
         endDate: document.getElementById('formTripEnd').value,
         image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400',
         isCompleted: false,
         stops: []
-      });
+      };
+      tripsDB.unshift(newTrip); // Add to global DB
       closeModal('createTripModal');
       e.target.reset();
       saveState();
@@ -742,12 +767,17 @@
 
     function handleAddStop(e) {
       e.preventDefault();
-      trips[activeTripIndex].stops.push({
+      myTrips[activeTripIndex].stops.push({
         city: document.getElementById('formStopCity').value,
         startDate: document.getElementById('formStopStart').value,
         endDate: document.getElementById('formStopEnd').value,
         activities: []
       });
+      
+      // Update global DB with the modified trip
+      const globalIndex = tripsDB.findIndex(t => t.id === myTrips[activeTripIndex].id);
+      tripsDB[globalIndex] = myTrips[activeTripIndex];
+      
       closeModal('addStopModal');
       e.target.reset();
       saveState();
@@ -762,12 +792,16 @@
     function handleAddActivity(e) {
       e.preventDefault();
       const sIdx = document.getElementById('formTargetStopIdx').value;
-      trips[activeTripIndex].stops[sIdx].activities.push({
+      myTrips[activeTripIndex].stops[sIdx].activities.push({
         name: document.getElementById('formActName').value,
         category: document.getElementById('formActCategory').value,
         cost: Number(document.getElementById('formActCost').value),
         dayNumber: Number(document.getElementById('formActDay').value || 1)
       });
+      
+      const globalIndex = tripsDB.findIndex(t => t.id === myTrips[activeTripIndex].id);
+      tripsDB[globalIndex] = myTrips[activeTripIndex];
+
       closeModal('addActivityModal');
       e.target.reset();
       saveState();
@@ -776,14 +810,18 @@
 
     function removeStop(sIdx) {
       if(confirm('Delete section?')) {
-        trips[activeTripIndex].stops.splice(sIdx, 1);
+        myTrips[activeTripIndex].stops.splice(sIdx, 1);
+        const globalIndex = tripsDB.findIndex(t => t.id === myTrips[activeTripIndex].id);
+        tripsDB[globalIndex] = myTrips[activeTripIndex];
         saveState();
         openTripWorkspace(activeTripIndex);
       }
     }
 
     function removeActivity(sIdx, aIdx) {
-      trips[activeTripIndex].stops[sIdx].activities.splice(aIdx, 1);
+      myTrips[activeTripIndex].stops[sIdx].activities.splice(aIdx, 1);
+      const globalIndex = tripsDB.findIndex(t => t.id === myTrips[activeTripIndex].id);
+      tripsDB[globalIndex] = myTrips[activeTripIndex];
       saveState();
       openTripWorkspace(activeTripIndex);
     }
@@ -792,10 +830,10 @@
       openModal('shareModal');
     }
 
-    // Init
-    updateAuthState(); // Load user session
-    saveState(); // Render trips
-    switchTab('dashboard'); // Start on dashboard
+    // Init App
+    updateAuthState(); 
+    loadMyTrips(); 
+    switchTab('dashboard'); 
   </script>
 </body>
 </html>

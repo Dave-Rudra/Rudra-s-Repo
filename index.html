@@ -64,6 +64,7 @@
           </button>
         </div>
       </div>
+
     </div>
   </header>
 
@@ -110,7 +111,6 @@
 
     <!-- SCREEN 3: MAIN LANDING PAGE -->
     <section id="view-dashboard" class="tab-view space-y-8">
-      <!-- Banner Image Section -->
       <div class="w-full h-64 md:h-80 rounded-xl overflow-hidden relative shadow-md flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 border border-slate-300">
         <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200')] bg-cover bg-center mix-blend-overlay"></div>
         <div class="relative z-10 text-center px-4">
@@ -131,12 +131,6 @@
              <option value="Budget">Budget</option>
              <option value="Moderate">Moderate</option>
              <option value="Luxury">Luxury</option>
-          </select>
-          <select id="dashCategoryFilter" onchange="renderDashboard()" class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none">
-             <option value="All">Filter by Category</option>
-             <option value="Sightseeing">Sightseeing</option>
-             <option value="Food">Food & Dining</option>
-             <option value="Adventure">Adventure</option>
           </select>
         </div>
       </div>
@@ -386,24 +380,130 @@
     </div>
   </div>
 
+  <!-- MODAL: PLACE / ACTIVITY INFO -->
+  <div id="infoModal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white border border-slate-300 rounded-md max-w-xl w-full shadow-xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-300 p-4 sticky top-0 bg-white">
+        <div>
+          <h3 id="infoName" class="text-lg font-bold text-slate-800">Name</h3>
+          <p id="infoSubtitle" class="text-xs text-slate-500 uppercase tracking-wide">Subtitle</p>
+        </div>
+        <button onclick="closeModal('infoModal')" class="text-slate-500 font-bold text-lg">✕</button>
+      </div>
+
+      <div class="p-4 space-y-4">
+        <div class="w-full aspect-video rounded-md overflow-hidden border border-slate-300 bg-slate-100">
+          <img id="infoImage" class="w-full h-full object-cover" src="" alt="photo" />
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold text-slate-700 mb-1">About</h4>
+          <p id="infoDesc" class="text-sm text-slate-600 leading-relaxed">Description goes here.</p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold text-slate-700 mb-1">History</h4>
+          <p id="infoHistory" class="text-sm text-slate-600 leading-relaxed">History goes here.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="border border-slate-200 rounded-md p-3 bg-slate-50">
+            <p id="infoFact1Label" class="text-[10px] uppercase font-bold text-slate-500">Best time to visit</p>
+            <p id="infoFact1Value" class="text-sm font-semibold text-slate-800">-</p>
+          </div>
+          <div class="border border-slate-200 rounded-md p-3 bg-slate-50">
+            <p id="infoFact2Label" class="text-[10px] uppercase font-bold text-slate-500">Cost</p>
+            <p id="infoFact2Value" class="text-sm font-semibold text-slate-800">-</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button id="infoPlanBtn" onclick="planTripFromInfo()" class="border border-slate-400 bg-white text-slate-800 font-semibold text-sm px-4 py-2 rounded-sm hover:bg-slate-50">
+            + Plan a Trip Here
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
     // Master Data
     const PRESET_CITIES = [
-      { name: 'Paris', country: 'France', cost: 'Luxury', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400' },
-      { name: 'Tokyo', country: 'Japan', cost: 'Moderate', image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400' },
-      { name: 'Rome', country: 'Italy', cost: 'Moderate', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400' },
-      { name: 'Bangkok', country: 'Thailand', cost: 'Budget', image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400' },
-      { name: 'Goa', country: 'India', cost: 'Moderate', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400' }
+      {
+        name: 'Paris', country: 'France', cost: 'Luxury',
+        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800',
+        info: 'Paris, the capital of France, is famous for the Eiffel Tower, world-class museums like the Louvre, charming cafes and romantic riverside walks along the Seine.',
+        history: 'Paris began as a small settlement of the Parisii tribe on the Île de la Cité over 2,000 years ago. It grew into the political and cultural capital of France, shaping art, fashion and revolution through the centuries, including the French Revolution of 1789.',
+        bestTime: 'April - June, Sept - Oct'
+      },
+      {
+        name: 'Tokyo', country: 'Japan', cost: 'Moderate',
+        image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800',
+        info: 'Tokyo blends ultra-modern skyscrapers with historic temples. Expect neon-lit streets, incredible food, efficient trains and a unique mix of tradition and technology.',
+        history: 'Originally a small fishing village called Edo, Tokyo became the seat of power in 1603 when the Tokugawa shogunate made it their base. It was renamed Tokyo ("Eastern Capital") in 1868 and rebuilt into the global megacity it is today after WWII.',
+        bestTime: 'Mar - May, Oct - Nov'
+      },
+      {
+        name: 'Rome', country: 'Italy', cost: 'Moderate',
+        image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800',
+        info: 'Rome, Italy\'s capital, is a living museum with the Colosseum, Roman Forum, Vatican City and centuries of history around every corner — plus unbeatable pasta and gelato.',
+        history: 'Founded, according to legend, in 753 BC, Rome became the heart of one of the largest empires in history. It later became the center of the Roman Catholic Church, and its ancient ruins still stand alongside Renaissance and modern architecture.',
+        bestTime: 'Apr - May, Sept - Oct'
+      },
+      {
+        name: 'Bangkok', country: 'Thailand', cost: 'Budget',
+        image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800',
+        info: 'Bangkok is known for ornate shrines, vibrant street life, bustling markets and some of the best street food in the world, all at very budget-friendly prices.',
+        history: 'Bangkok became the capital of Siam (now Thailand) in 1782 under King Rama I, who built the Grand Palace and Wat Phra Kaew. It grew from a trading post on the Chao Phraya River into one of Southeast Asia\'s largest cities.',
+        bestTime: 'Nov - Feb'
+      },
+      {
+        name: 'Goa', country: 'India', cost: 'Moderate',
+        image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800',
+        info: 'Goa, on India\'s west coast, is famous for its palm-lined beaches, laid-back beach shacks, Portuguese-era churches and lively nightlife.',
+        history: 'Goa was a Portuguese colony for over 450 years, from 1510 until it was annexed by India in 1961. That long colonial history left behind striking churches, forts and a distinct Indo-Portuguese culture still visible today.',
+        bestTime: 'Nov - Feb'
+      }
     ];
 
     const PRESET_ACTIVITIES = [
-      { name: 'Eiffel Tower Summit', city: 'Paris', category: 'Sightseeing', cost: 3000 },
-      { name: 'Louvre Museum Tour', city: 'Paris', category: 'Sightseeing', cost: 1800 },
-      { name: 'Shibuya Crossing', city: 'Tokyo', category: 'Food', cost: 3500 },
-      { name: 'Colosseum Guided Tour', city: 'Rome', category: 'Sightseeing', cost: 2500 },
-      { name: 'Grand Palace', city: 'Bangkok', category: 'Sightseeing', cost: 1200 },
-      { name: 'Baga Beach Watersports', city: 'Goa', category: 'Adventure', cost: 1500 }
+      {
+        name: 'Eiffel Tower Summit', city: 'Paris', category: 'Sightseeing', cost: 3000,
+        image: 'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=800',
+        info: 'Ride to the very top of the Eiffel Tower for panoramic views across Paris. An iconic must-do experience with lifts and viewing decks at multiple levels.',
+        history: 'Built by engineer Gustave Eiffel for the 1889 World\'s Fair, the tower was originally meant to be temporary and faced criticism from Parisians. It has since become the most recognizable symbol of France.'
+      },
+      {
+        name: 'Louvre Museum Tour', city: 'Paris', category: 'Sightseeing', cost: 1800,
+        image: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800',
+        info: 'Explore the world\'s largest art museum, home to the Mona Lisa, Venus de Milo, and thousands of other masterpieces spanning centuries.',
+        history: 'The Louvre began as a fortress in the late 12th century before becoming a royal palace. It opened as a public museum in 1793 during the French Revolution and now houses over 380,000 objects.'
+      },
+      {
+        name: 'Shibuya Crossing', city: 'Tokyo', category: 'Food', cost: 3500,
+        image: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=800',
+        info: 'Experience the world\'s busiest pedestrian crossing, surrounded by neon signs, shopping and some of Tokyo\'s best street food and izakayas.',
+        history: 'Shibuya Crossing grew alongside Shibuya Station, one of Tokyo\'s busiest rail hubs, becoming a symbol of modern Tokyo\'s scale and energy, with up to 3,000 people crossing at once during peak times.'
+      },
+      {
+        name: 'Colosseum Guided Tour', city: 'Rome', category: 'Sightseeing', cost: 2500,
+        image: 'https://images.unsplash.com/photo-1552350964-923b0a2c0aa9?w=800',
+        info: 'Walk through the ancient Colosseum with a guide explaining gladiator battles, engineering feats, and the daily life of ancient Rome.',
+        history: 'Completed in 80 AD under Emperor Titus, the Colosseum could hold up to 80,000 spectators for gladiator contests and public spectacles. It remains the largest amphitheater ever built.'
+      },
+      {
+        name: 'Grand Palace', city: 'Bangkok', category: 'Sightseeing', cost: 1200,
+        image: 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=800',
+        info: 'Visit the dazzling Grand Palace complex, including the Temple of the Emerald Buddha, ornate spires and traditional Thai architecture.',
+        history: 'Built in 1782 as the official residence of the Kings of Siam, the Grand Palace was the heart of the Thai government for 150 years and remains one of the most sacred sites in the country.'
+      },
+      {
+        name: 'Baga Beach Watersports', city: 'Goa', category: 'Adventure', cost: 1500,
+        image: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800',
+        info: 'Try parasailing, jet-skiing and banana boat rides on Goa\'s lively Baga Beach, one of the most popular stretches of sand in North Goa.',
+        history: 'Once a quiet fishing village, Baga transformed through the 1960s-70s hippie era and later tourism boom into one of Goa\'s most popular beaches for nightlife and watersports.'
+      }
     ];
 
     // ----- DATABASE SIMULATION (LocalStorage) -----
@@ -412,6 +512,7 @@
     let currentUser = JSON.parse(localStorage.getItem('gt_current_user')) || null;
     let myTrips = []; 
     let activeTripIndex = 0;
+    let infoSelected = null;
 
     // ----- AUTHENTICATION LOGIC -----
     function handleSignup(e) {
@@ -552,6 +653,57 @@
     function closeModal(id) {
       document.getElementById(id).classList.add('hidden');
       document.getElementById(id).classList.remove('flex');
+      if (id === 'infoModal') infoSelected = null;
+    }
+
+    function openCityInfo(cityName) {
+      const city = PRESET_CITIES.find(c => c.name === cityName);
+      if (!city) return;
+
+      infoSelected = { type: 'city', name: city.name, city: city.name };
+
+      document.getElementById('infoName').innerText = city.name;
+      document.getElementById('infoSubtitle').innerText = city.country;
+      document.getElementById('infoImage').src = city.image;
+      document.getElementById('infoDesc').innerText = city.info;
+      document.getElementById('infoHistory').innerText = city.history;
+      document.getElementById('infoFact1Label').innerText = 'Best time to visit';
+      document.getElementById('infoFact1Value').innerText = city.bestTime;
+      document.getElementById('infoFact2Label').innerText = 'Cost Tier';
+      document.getElementById('infoFact2Value').innerText = city.cost;
+      document.getElementById('infoPlanBtn').classList.remove('hidden');
+
+      openModal('infoModal');
+    }
+
+    function openActivityInfo(activityName) {
+      const act = PRESET_ACTIVITIES.find(a => a.name === activityName);
+      if (!act) return;
+
+      infoSelected = { type: 'activity', name: act.name, city: act.city };
+
+      document.getElementById('infoName').innerText = act.name;
+      document.getElementById('infoSubtitle').innerText = `${act.city} · ${act.category}`;
+      document.getElementById('infoImage').src = act.image;
+      document.getElementById('infoDesc').innerText = act.info;
+      document.getElementById('infoHistory').innerText = act.history;
+      document.getElementById('infoFact1Label').innerText = 'Category';
+      document.getElementById('infoFact1Value').innerText = act.category;
+      document.getElementById('infoFact2Label').innerText = 'Cost';
+      document.getElementById('infoFact2Value').innerText = `₹${act.cost}`;
+      document.getElementById('infoPlanBtn').classList.remove('hidden');
+
+      openModal('infoModal');
+    }
+
+    function planTripFromInfo() {
+      if (!infoSelected) return;
+      closeModal('infoModal');
+      requireAuth('createTripModal');
+      setTimeout(() => {
+        const titleInput = document.getElementById('formTripTitle');
+        if (titleInput && !titleInput.value) titleInput.value = `Trip to ${infoSelected.city}`;
+      }, 50);
     }
 
     function calculateTotalCost(trip) {
@@ -574,7 +726,7 @@
       const gridContainer = document.getElementById('dashDestinationsGrid');
       if (gridContainer) {
         gridContainer.innerHTML = filteredCities.map(c => `
-          <div class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer h-32 relative">
+          <div onclick="openCityInfo('${c.name}')" class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer h-32 relative">
             <img src="${c.image}" class="w-full h-full object-cover" />
             <div class="absolute bottom-0 w-full bg-white/90 p-1 text-center border-t border-slate-300 text-xs font-bold">${c.name}</div>
           </div>
@@ -633,7 +785,6 @@
       document.getElementById('upcomingTripsList').innerHTML = renderList(upcoming);
       document.getElementById('completedTripsList').innerHTML = renderList(completed);
       
-      // I also added the ongoing trips list so it populates correctly!
       const ongoingContainer = document.querySelector('#view-my-trips > div:nth-child(2) .space-y-3');
       if (ongoingContainer) {
          ongoingContainer.innerHTML = renderList(ongoing);
@@ -685,12 +836,12 @@
       });
 
       const mixedData = [
-          ...filteredCities.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
-          ...filteredActivities.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
+          ...filteredCities.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost, clickFn: `openCityInfo('${c.name}')` })),
+          ...filteredActivities.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}`, clickFn: `openActivityInfo('${a.name}')` }))
       ];
 
       document.getElementById('catalogList').innerHTML = mixedData.map(item => `
-        <div class="w-full bg-white border border-slate-300 p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer">
+        <div onclick="${item.clickFn}" class="w-full bg-white border border-slate-300 p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer">
            <div>
               <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">${item.type}</p>
               <h4 class="font-bold text-slate-800 text-sm">${item.title}</h4>

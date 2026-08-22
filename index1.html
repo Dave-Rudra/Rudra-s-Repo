@@ -409,11 +409,9 @@
       </div>
 
       <div class="p-4 space-y-4">
-        <!-- Video embed -->
+        <!-- City Photo -->
         <div class="w-full aspect-video rounded-md overflow-hidden border border-slate-300 bg-slate-100">
-          <iframe id="cityInfoVideo" class="w-full h-full" src="" title="City video" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
+          <img id="cityInfoImage" class="w-full h-full object-cover" src="" alt="City photo" />
         </div>
 
         <!-- Description -->
@@ -446,43 +444,38 @@
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
     // Master Data
-    // Each city now carries "info" (short description), "bestTime", and "videoId"
-    // (the YouTube video ID — the part after watch?v= in a normal YouTube URL)
+    // Each city now carries "info" (short description) and "bestTime".
+    // "image" is used both for the small card thumbnail and the big photo in the info modal.
     const PRESET_CITIES = [
       {
         name: 'Paris', country: 'France', cost: 'Luxury',
-        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400',
+        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800',
         info: 'Paris, the capital of France, is famous for the Eiffel Tower, world-class museums like the Louvre, charming cafes and romantic riverside walks along the Seine.',
-        bestTime: 'April - June, Sept - Oct',
-        videoId: 'BpEmR4V-QVA'
+        bestTime: 'April - June, Sept - Oct'
       },
       {
         name: 'Tokyo', country: 'Japan', cost: 'Moderate',
-        image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400',
+        image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800',
         info: 'Tokyo blends ultra-modern skyscrapers with historic temples. Expect neon-lit streets, incredible food, efficient trains and a unique mix of tradition and technology.',
-        bestTime: 'Mar - May, Oct - Nov',
-        videoId: 'CDCi2Iuiwbo'
+        bestTime: 'Mar - May, Oct - Nov'
       },
       {
         name: 'Rome', country: 'Italy', cost: 'Moderate',
-        image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400',
+        image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800',
         info: 'Rome, Italy\'s capital, is a living museum with the Colosseum, Roman Forum, Vatican City and centuries of history around every corner — plus unbeatable pasta and gelato.',
-        bestTime: 'Apr - May, Sept - Oct',
-        videoId: 'dQjm3wJGZWo'
+        bestTime: 'Apr - May, Sept - Oct'
       },
       {
         name: 'Bangkok', country: 'Thailand', cost: 'Budget',
-        image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400',
+        image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800',
         info: 'Bangkok is known for ornate shrines, vibrant street life, bustling markets and some of the best street food in the world, all at very budget-friendly prices.',
-        bestTime: 'Nov - Feb',
-        videoId: 'JHbaHJwPt4A'
+        bestTime: 'Nov - Feb'
       },
       {
         name: 'Goa', country: 'India', cost: 'Moderate',
-        image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400',
+        image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800',
         info: 'Goa, on India\'s west coast, is famous for its palm-lined beaches, laid-back beach shacks, Portuguese-era churches and lively nightlife.',
-        bestTime: 'Nov - Feb',
-        videoId: 'oXqAlNSyIWM'
+        bestTime: 'Nov - Feb'
       }
     ];
 
@@ -629,15 +622,13 @@
     function closeModal(id) {
       document.getElementById(id).classList.add('hidden');
       document.getElementById(id).classList.remove('flex');
-      // Stop the video from playing in the background once the info modal closes
       if (id === 'cityInfoModal') {
-        document.getElementById('cityInfoVideo').src = '';
         cityInfoSelectedName = null;
       }
     }
 
-    // ----- CITY INFO MODAL (NEW) -----
-    // Opens a modal with a description + embedded YouTube video for the given city name
+    // ----- CITY INFO MODAL -----
+    // Opens a modal with a big photo + description for the given city name
     function openCityInfo(cityName) {
       const city = PRESET_CITIES.find(c => c.name === cityName);
       if (!city) return;
@@ -648,7 +639,7 @@
       document.getElementById('cityInfoDesc').innerText = city.info;
       document.getElementById('cityInfoBestTime').innerText = city.bestTime;
       document.getElementById('cityInfoCost').innerText = city.cost;
-      document.getElementById('cityInfoVideo').src = `https://www.youtube.com/embed/${city.videoId}`;
+      document.getElementById('cityInfoImage').src = city.image;
 
       openModal('cityInfoModal');
     }

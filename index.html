@@ -83,7 +83,7 @@
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-xs font-bold uppercase text-slate-400">Total Budget</p>
-          <p class="text-2xl font-black text-emerald-600 mt-1" id="dashTotalBudget">$0</p>
+          <p class="text-2xl font-black text-emerald-600 mt-1" id="dashTotalBudget">₹0</p>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-xs font-bold uppercase text-slate-400">Stops Planned</p>
@@ -227,7 +227,7 @@
           <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-1 flex flex-col justify-between">
             <div>
               <span class="text-xs uppercase font-bold text-slate-400">Total Trip Cost</span>
-              <p class="text-4xl font-black text-brand-600 mt-2" id="budgetTotalDisplay">$0.00</p>
+              <p class="text-4xl font-black text-brand-600 mt-2" id="budgetTotalDisplay">₹0.00</p>
               <div class="mt-4 space-y-2 text-sm">
                 <div class="flex justify-between py-1 border-b border-slate-100">
                   <span class="text-slate-500">Number of Stops:</span>
@@ -239,7 +239,7 @@
                 </div>
                 <div class="flex justify-between py-1 border-b border-slate-100">
                   <span class="text-slate-500">Average Cost / Day:</span>
-                  <span class="font-bold text-emerald-600" id="budgetAvgPerDay">$0.00</span>
+                  <span class="font-bold text-emerald-600" id="budgetAvgPerDay">₹0.00</span>
                 </div>
               </div>
             </div>
@@ -284,10 +284,10 @@
         <div>
           <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Preferred Currency</label>
           <select class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none">
+            <option>INR (₹)</option>
             <option>USD ($)</option>
             <option>EUR (€)</option>
             <option>GBP (£)</option>
-            <option>INR (₹)</option>
           </select>
         </div>
         <button onclick="alert('Profile changes saved successfully!')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition">
@@ -397,8 +397,8 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cost ($)</label>
-            <input type="number" step="0.01" id="formActCost" required placeholder="25.00" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cost (₹)</label>
+            <input type="number" step="0.01" id="formActCost" required placeholder="2500.00" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
@@ -442,22 +442,24 @@
 
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
-    // Master Catalog Data (Relational Presets)
+    // Master Catalog Data (Relational Presets) - Values updated for INR examples
     const PRESET_CITIES = [
       { id: 'c1', name: 'Paris', country: 'France', costIndex: 'Luxury', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600' },
       { id: 'c2', name: 'Tokyo', country: 'Japan', costIndex: 'Moderate', image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=600' },
       { id: 'c3', name: 'Rome', country: 'Italy', costIndex: 'Moderate', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600' },
-      { id: 'c4', name: 'Bangkok', country: 'Thailand', costIndex: 'Budget', image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600' }
+      { id: 'c4', name: 'Bangkok', country: 'Thailand', costIndex: 'Budget', image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600' },
+      { id: 'c5', name: 'Goa', country: 'India', costIndex: 'Moderate', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600' }
     ];
 
     const PRESET_ACTIVITIES = [
-      { name: 'Eiffel Tower Summit', city: 'Paris', category: 'Sightseeing', cost: 35, duration: '2.5 hrs' },
-      { name: 'Louvre Museum Tour', city: 'Paris', category: 'Sightseeing', cost: 22, duration: '3.0 hrs' },
-      { name: 'Seine Gourmet Dinner Cruise', city: 'Paris', category: 'Food', cost: 95, duration: '2.0 hrs' },
-      { name: 'Shibuya Crossing Street Food', city: 'Tokyo', category: 'Food', cost: 45, duration: '2.0 hrs' },
-      { name: 'TeamLab Planets Museum', city: 'Tokyo', category: 'Adventure', cost: 32, duration: '2.5 hrs' },
-      { name: 'Colosseum & Forum Guided Tour', city: 'Rome', category: 'Sightseeing', cost: 30, duration: '3.0 hrs' },
-      { name: 'Grand Palace & Emerald Buddha', city: 'Bangkok', category: 'Sightseeing', cost: 15, duration: '2.5 hrs' }
+      { name: 'Eiffel Tower Summit', city: 'Paris', category: 'Sightseeing', cost: 3000, duration: '2.5 hrs' },
+      { name: 'Louvre Museum Tour', city: 'Paris', category: 'Sightseeing', cost: 1800, duration: '3.0 hrs' },
+      { name: 'Seine Gourmet Dinner Cruise', city: 'Paris', category: 'Food', cost: 7500, duration: '2.0 hrs' },
+      { name: 'Shibuya Crossing Street Food', city: 'Tokyo', category: 'Food', cost: 3500, duration: '2.0 hrs' },
+      { name: 'TeamLab Planets Museum', city: 'Tokyo', category: 'Adventure', cost: 2600, duration: '2.5 hrs' },
+      { name: 'Colosseum & Forum Guided Tour', city: 'Rome', category: 'Sightseeing', cost: 2500, duration: '3.0 hrs' },
+      { name: 'Grand Palace & Emerald Buddha', city: 'Bangkok', category: 'Sightseeing', cost: 1200, duration: '2.5 hrs' },
+      { name: 'Baga Beach Watersports', city: 'Goa', category: 'Adventure', cost: 1500, duration: '2.0 hrs' }
     ];
 
     const CATEGORY_COLORS = {
@@ -486,9 +488,9 @@
             endDate: '2026-09-14',
             image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600',
             activities: [
-              { name: 'Eiffel Tower Summit', category: 'Sightseeing', cost: 35, dayNumber: 1, time: '10:00 AM' },
-              { name: 'Seine Gourmet Dinner Cruise', category: 'Food', cost: 95, dayNumber: 1, time: '07:30 PM' },
-              { name: 'Louvre Museum Tour', category: 'Sightseeing', cost: 22, dayNumber: 2, time: '09:30 AM' }
+              { name: 'Eiffel Tower Summit', category: 'Sightseeing', cost: 3000, dayNumber: 1, time: '10:00 AM' },
+              { name: 'Seine Gourmet Dinner Cruise', category: 'Food', cost: 7500, dayNumber: 1, time: '07:30 PM' },
+              { name: 'Louvre Museum Tour', category: 'Sightseeing', cost: 1800, dayNumber: 2, time: '09:30 AM' }
             ]
           },
           {
@@ -499,7 +501,7 @@
             endDate: '2026-09-18',
             image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600',
             activities: [
-              { name: 'Colosseum & Forum Guided Tour', category: 'Sightseeing', cost: 30, dayNumber: 5, time: '11:00 AM' }
+              { name: 'Colosseum & Forum Guided Tour', category: 'Sightseeing', cost: 2500, dayNumber: 5, time: '11:00 AM' }
             ]
           }
         ]
@@ -570,7 +572,7 @@
       document.getElementById('dashTotalTrips').innerText = totalTrips;
       document.getElementById('dashTotalStops').innerText = totalStops;
       document.getElementById('dashTotalActivities').innerText = totalActivities;
-      document.getElementById('dashTotalBudget').innerText = `$${grandBudget.toFixed(2)}`;
+      document.getElementById('dashTotalBudget').innerText = `₹${grandBudget.toFixed(2)}`;
 
       const dashGrid = document.getElementById('dashTripsGrid');
       dashGrid.innerHTML = trips.slice(0, 3).map((trip, idx) => renderTripCardHTML(trip, idx)).join('');
@@ -614,7 +616,7 @@
           </div>
           <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
             <span class="text-slate-500">📅 ${trip.startDate}</span>
-            <span class="font-extrabold text-brand-600 text-sm">$${cost.toFixed(2)}</span>
+            <span class="font-extrabold text-brand-600 text-sm">₹${cost.toFixed(2)}</span>
           </div>
         </div>
       `;
@@ -686,7 +688,7 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-3">
-                  <span class="font-bold text-slate-900 text-sm">$${Number(act.cost).toFixed(2)}</span>
+                  <span class="font-bold text-slate-900 text-sm">₹${Number(act.cost).toFixed(2)}</span>
                   <button onclick="removeActivity(${sIdx}, ${aIdx})" class="text-slate-300 hover:text-rose-500 text-xs font-bold">✕</button>
                 </div>
               </div>
@@ -703,10 +705,10 @@
       const stopCount = trip.stops.length;
       const actCount = trip.stops.reduce((acc, s) => acc + s.activities.length, 0);
 
-      document.getElementById('budgetTotalDisplay').innerText = `$${totalCost.toFixed(2)}`;
+      document.getElementById('budgetTotalDisplay').innerText = `₹${totalCost.toFixed(2)}`;
       document.getElementById('budgetStopCount').innerText = stopCount;
       document.getElementById('budgetActCount').innerText = actCount;
-      document.getElementById('budgetAvgPerDay').innerText = `$${(totalCost / Math.max(1, actCount)).toFixed(2)}`;
+      document.getElementById('budgetAvgPerDay').innerText = `₹${(totalCost / Math.max(1, actCount)).toFixed(2)}`;
 
       const categoryTotals = { Sightseeing: 0, Food: 0, Stay: 0, Transport: 0, Adventure: 0 };
       trip.stops.forEach(s => s.activities.forEach(a => {
@@ -753,7 +755,7 @@
                     <span class="font-semibold text-slate-800">${a.name}</span>
                     <span class="text-slate-400 text-[10px] ml-1">(${a.time || 'Day'})</span>
                   </div>
-                  <span class="font-bold text-slate-900">$${Number(a.cost).toFixed(2)}</span>
+                  <span class="font-bold text-slate-900">₹${Number(a.cost).toFixed(2)}</span>
                 </div>
               `).join('')}
             </div>
@@ -807,7 +809,7 @@
             </div>
           </div>
           <div class="text-right">
-            <p class="font-bold text-sm text-slate-900 mb-1">$${a.cost}</p>
+            <p class="font-bold text-sm text-slate-900 mb-1">₹${a.cost}</p>
             <button onclick="quickAddActivity('${a.name}', '${a.category}', ${a.cost})" class="bg-brand-600 hover:bg-brand-700 text-white text-[11px] font-bold px-3 py-1 rounded-lg">
               Add
             </button>

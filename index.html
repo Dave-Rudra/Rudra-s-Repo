@@ -632,15 +632,43 @@
       document.getElementById('profileCompletedGrid').innerHTML = generateGrid(completed) || `<p class="text-xs text-slate-400 col-span-2">No previous trips.</p>`;
     }
 
-    // 4. Render Explore Catalog
+    // 4. Render Explore Catalog (With Working Filters)
     function renderCatalog() {
       const search = document.getElementById('catalogSearchInput').value.toLowerCase();
+      const costFilter = document.getElementById('catalogCostFilter').value;
+      const catFilter = document.getElementById('catalogCategoryFilter').value;
       
-      const mixedData = [
-          ...PRESET_CITIES.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
-          ...PRESET_ACTIVITIES.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
-      ].filter(item => item.title.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search));
+      // Filter Cities
+      const filteredCities = PRESET_CITIES.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) || c.country.toLowerCase().includes(search);
+        const matchesCost = costFilter === 'All' || c.cost === costFilter;
+        // Cities don't have categories (like Food/Sightseeing), so if a specific category is chosen, we hide cities.
+        const matchesCat = catFilter === 'All'; 
+        return matchesSearch && matchesCost && matchesCat;
+      });
 
+      // Filter Activities
+      const filteredActivities = PRESET_ACTIVITIES.filter(a => {
+        const matchesSearch = a.name.toLowerCase().includes(search) || a.city.toLowerCase().includes(search);
+        const matchesCat = catFilter === 'All' || a.category === catFilter;
+        
+        // Convert numeric cost into a tier to match the dropdown options
+        let aCostTier = 'Budget';
+        if (a.cost >= 4000) aCostTier = 'Luxury';
+        else if (a.cost >= 2000) aCostTier = 'Moderate';
+
+        const matchesCost = costFilter === 'All' || aCostTier === costFilter;
+
+        return matchesSearch && matchesCat && matchesCost;
+      });
+
+      // Combine both filtered arrays
+      const mixedData = [
+          ...filteredCities.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
+          ...filteredActivities.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
+      ];
+
+      // Render to the screen
       document.getElementById('catalogList').innerHTML = mixedData.map(item => `
         <div class="w-full bg-white border border-slate-300 p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer">
            <div>
@@ -652,16 +680,7 @@
               <span class="border border-slate-300 px-2 py-0.5 rounded text-[10px] bg-slate-100">${item.extra}</span>
            </div>
         </div>
-      `).join('') || `<div class="text-sm text-slate-400 p-4 border border-slate-300 text-center">No matching options found.</div>`;
-    }
-
-    function renderModalSuggestions() {
-      document.getElementById('modalSuggestionsGrid').innerHTML = PRESET_CITIES.map(c => `
-         <div class="border border-slate-300 rounded-sm p-2 text-center h-24 relative overflow-hidden">
-            <img src="${c.image}" class="absolute inset-0 w-full h-full object-cover opacity-50"/>
-            <span class="relative z-10 font-bold text-slate-900 text-sm bg-white/80 px-2 py-1 rounded">${c.name}</span>
-         </div>
-      `).join('');
+      `).join('') || `<div class="text-sm text-slate-400 p-4 border border-slate-300 text-center bg-white rounded-md">No matching options found.</div>`;
     }
 
     // 5. Render Detail Timeline

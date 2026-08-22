@@ -70,6 +70,7 @@
 
     </div>
   </header>
+
   <!-- ================= MAIN CONTAINER ================= -->
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
 
@@ -129,7 +130,7 @@
         </div>
       </div>
 
-      <!-- Search / Filter Bar (Updated: Matches Explore Screen Options, Sort By Removed) -->
+      <!-- Search / Filter Bar (Sort By Removed) -->
       <div class="flex flex-col sm:flex-row gap-2">
         <input type="text" id="dashSearchInput" oninput="renderDashboard()" placeholder="Search places..." class="flex-1 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none focus:border-slate-500" />
         <div class="flex gap-2">
@@ -166,14 +167,13 @@
       </div>
     </section>
 
-    <!-- SCREEN 6: USER TRIP LISTING -->
+    <!-- SCREEN 6: USER TRIP LISTING (Sort By Removed) -->
     <section id="view-my-trips" class="tab-view hidden space-y-6">
       <div class="flex flex-col sm:flex-row gap-2 justify-between">
         <input type="text" placeholder="Search trips..." class="w-full md:w-1/2 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none" />
         <div class="flex gap-2">
           <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Group by</option></select>
           <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
         </div>
       </div>
 
@@ -264,7 +264,6 @@
         <div class="flex gap-2">
           <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Group by</option></select>
           <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
           <button onclick="openShareModal()" class="bg-white border border-slate-300 px-3 py-1.5 rounded-md text-sm font-bold">Share</button>
         </div>
       </div>
@@ -564,7 +563,7 @@
       return trip.stops.reduce((acc, stop) => acc + stop.activities.reduce((sAcc, act) => sAcc + Number(act.cost || 0), 0), 0);
     }
 
-    // 1. Render Dashboard (Filtered by Cost and Category options)
+    // 1. Render Dashboard
     function renderDashboard() {
       const searchInput = document.getElementById('dashSearchInput');
       const search = searchInput ? searchInput.value.toLowerCase() : '';

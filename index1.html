@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- jsPDF CDN (used for the "Export PDF" itinerary button) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -262,6 +264,7 @@
           <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
           <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
           <button onclick="openShareModal()" class="bg-white border border-slate-300 px-3 py-1.5 rounded-md text-sm font-bold">Share</button>
+          <button onclick="exportTripPDF()" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-md text-sm font-bold">Export PDF</button>
         </div>
       </div>
 
@@ -897,10 +900,17 @@
                    </div>
                 </div>
                 <div class="p-4 space-y-3">
-                   ${stop.activities.length === 0 ? '<p class="text-xs text-slate-400 text-center py-2">No physical activities added yet.</p>' : ''}
+                   ${stop.activities.length === 0 ? '<p class="text-xs text-slate-400 text-center py-2">No physical activities added yet.</p>' : '<p class="text-[10px] text-slate-400 text-center pb-1">Drag the ⠿ handle to reorder activities</p>'}
+                   <div id="activityList-${sIdx}" class="space-y-3">
                    ${stop.activities.map((a, aIdx) => `
-                     <div class="grid grid-cols-12 gap-4 items-center border border-slate-200 p-2 rounded-sm bg-slate-50">
-                        <div class="col-span-2 text-center border-r border-slate-300 pr-2">
+                     <div draggable="true"
+                          ondragstart="handleActivityDragStart(event, ${sIdx}, ${aIdx})"
+                          ondragover="handleActivityDragOver(event)"
+                          ondrop="handleActivityDrop(event, ${sIdx}, ${aIdx})"
+                          ondragend="handleActivityDragEnd(event)"
+                          class="grid grid-cols-12 gap-4 items-center border border-slate-200 p-2 rounded-sm bg-slate-50 cursor-grab active:cursor-grabbing">
+                        <div class="col-span-1 text-center text-slate-400 font-bold select-none">⠿</div>
+                        <div class="col-span-1 text-center border-r border-slate-300 pr-2">
                           <span class="block border border-slate-300 bg-white text-xs font-bold py-1">Day ${a.dayNumber}</span>
                         </div>
                         <div class="col-span-7 pl-2">
@@ -913,6 +923,7 @@
                         </div>
                      </div>
                    `).join('')}
+                   </div>
                 </div>
               </div>
               ${sIdx < trip.stops.length - 1 ? `<div class="w-full flex justify-center -mt-8 mb-2"><div class="h-6 border-l-2 border-slate-800"></div></div><div class="w-full flex justify-center mb-6"><div class="border-t-2 border-slate-800 w-2 transform rotate-45 mt-[-2px]"></div><div class="border-t-2 border-slate-800 w-2 transform -rotate-45 mt-[-2px] ml-[-8px]"></div></div>` : ''}
@@ -1004,6 +1015,97 @@
 
     function openShareModal() {
       openModal('shareModal');
+    }
+
+    // ----- DRAG & DROP: reorder activities within a section -----
+    let dragState = null; // { sIdx, aIdx } of the activity currently being dragged
+
+    function handleActivityDragStart(e, sIdx, aIdx) {
+      dragState = { sIdx, aIdx };
+      e.currentTarget.classList.add('opacity-40');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleActivityDragOver(e) {
+      e.preventDefault(); // required to allow a drop
+      e.dataTransfer.dropEffect = 'move';
+    }
+
+    function handleActivityDragEnd(e) {
+      e.currentTarget.classList.remove('opacity-40');
+    }
+
+    function handleActivityDrop(e, sIdx, targetIdx) {
+      e.preventDefault();
+      if (!dragState || dragState.sIdx !== sIdx) { dragState = null; return; } // only reorder within the same section
+      const activities = myTrips[activeTripIndex].stops[sIdx].activities;
+      const [moved] = activities.splice(dragState.aIdx, 1);
+      activities.splice(targetIdx, 0, moved);
+
+      const globalIndex = tripsDB.findIndex(t => t.id === myTrips[activeTripIndex].id);
+      tripsDB[globalIndex] = myTrips[activeTripIndex];
+      dragState = null;
+      saveState();
+      renderTimeline(); // re-render just the timeline, no need to re-open the whole workspace
+    }
+
+    // ----- EXPORT PDF: download the current itinerary as a PDF file -----
+    function exportTripPDF() {
+      const trip = myTrips[activeTripIndex];
+      if (!trip) return;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      let y = 20;
+
+      doc.setFontSize(18);
+      doc.setFont(undefined, 'bold');
+      doc.text(trip.title, pageWidth / 2, y, { align: 'center' });
+      y += 8;
+
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text(`${trip.startDate} to ${trip.endDate}`, pageWidth / 2, y, { align: 'center' });
+      y += 6;
+      doc.text(`Total Estimated Budget: Rs. ${calculateTotalCost(trip)}`, pageWidth / 2, y, { align: 'center' });
+      y += 12;
+
+      trip.stops.forEach((stop, sIdx) => {
+        if (y > 260) { doc.addPage(); y = 20; }
+
+        doc.setFontSize(13);
+        doc.setFont(undefined, 'bold');
+        doc.text(`Section ${sIdx + 1}: ${stop.city}`, 14, y);
+        y += 6;
+
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        doc.text(`${stop.startDate} to ${stop.endDate}`, 14, y);
+        y += 8;
+
+        if (stop.activities.length === 0) {
+          doc.setFont(undefined, 'italic');
+          doc.text('No activities added yet.', 18, y);
+          doc.setFont(undefined, 'normal');
+          y += 8;
+        } else {
+          stop.activities.forEach(a => {
+            if (y > 270) { doc.addPage(); y = 20; }
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Day ${a.dayNumber}`, 18, y);
+            doc.setFont(undefined, 'normal');
+            doc.text(`${a.name} (${a.category})`, 38, y);
+            doc.text(`Rs. ${a.cost}`, pageWidth - 20, y, { align: 'right' });
+            y += 7;
+          });
+        }
+        y += 6;
+      });
+
+      const safeName = trip.title.replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+      doc.save(`${safeName || 'itinerary'}.pdf`);
     }
 
     // Init App

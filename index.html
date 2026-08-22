@@ -70,6 +70,7 @@
 
     </div>
   </header>
+
   <!-- ================= MAIN CONTAINER ================= -->
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
 
@@ -78,13 +79,13 @@
       <div class="bg-white border border-slate-300 rounded-md p-8 shadow-sm flex flex-col items-center">
         <form onsubmit="handleLogin(event)" class="w-full space-y-4">
           <div>
-            <input type="email" id="loginEmail" required placeholder="Email Address" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
+            <input type="email" id="loginEmail" required placeholder="Username / Email" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
           </div>
           <div>
             <input type="password" id="loginPassword" required placeholder="Password" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
           </div>
           <div class="pt-4 flex justify-center">
-            <button type="submit" class="border border-slate-400 text-slate-800 font-semibold px-8 py-2 rounded-sm hover:bg-slate-50 transition">Log In</button>
+            <button type="submit" class="border border-slate-400 text-slate-800 font-semibold px-8 py-2 rounded-sm hover:bg-slate-50 transition">Login Button</button>
           </div>
         </form>
       </div>
@@ -131,11 +132,20 @@
 
       <!-- Search / Filter Bar -->
       <div class="flex flex-col sm:flex-row gap-2">
-        <input type="text" placeholder="Search places..." class="flex-1 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none focus:border-slate-500" />
+        <input type="text" id="dashSearchInput" oninput="renderDashboard()" placeholder="Search places..." class="flex-1 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none focus:border-slate-500" />
         <div class="flex gap-2">
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Group by</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
+          <select id="dashCostFilter" onchange="renderDashboard()" class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none">
+             <option value="All">Group by Cost</option>
+             <option value="Budget">Budget</option>
+             <option value="Moderate">Moderate</option>
+             <option value="Luxury">Luxury</option>
+          </select>
+          <select id="dashCategoryFilter" onchange="renderDashboard()" class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none">
+             <option value="All">Filter by Category</option>
+             <option value="Sightseeing">Sightseeing</option>
+             <option value="Food">Food & Dining</option>
+             <option value="Adventure">Adventure</option>
+          </select>
         </div>
       </div>
 
@@ -147,7 +157,7 @@
 
       <!-- Previous Trips -->
       <div class="relative pb-12">
-        <h2 class="text-lg font-bold border-b border-slate-300 pb-2 mb-4 text-slate-800">Your Recent Trips</h2>
+        <h2 class="text-lg font-bold border-b border-slate-300 pb-2 mb-4 text-slate-800">Previous Trips</h2>
         <div id="dashTripsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         
         <!-- FAB button -->
@@ -187,7 +197,7 @@
     <!-- SCREEN 7: USER PROFILE PAGE (PHOTO REMOVED) -->
     <section id="view-profile" class="tab-view hidden space-y-8">
       <div class="w-full bg-white border border-slate-300 rounded-md p-6">
-        <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only)</h3>
+        <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only upon Signup)</h3>
         
         <!-- Notice if not logged in -->
         <div id="profileLoggedOutMsg" class="text-sm text-slate-500 mb-4 italic">
@@ -314,7 +324,7 @@
       </form>
 
       <div class="border-t border-slate-300 pt-4 flex-1">
-        <h4 class="text-sm font-bold text-slate-700 mb-4">Suggestion for Places To Visit</h4>
+        <h4 class="text-sm font-bold text-slate-700 mb-4">Suggestion for Places To Visit / Activities To perform</h4>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="modalSuggestionsGrid"></div>
       </div>
     </div>
@@ -537,7 +547,6 @@
       loadMyTrips(); 
     }
 
-    // Tabs
     function switchTab(tabId) {
       document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-slate-900', 'border-b-2', 'border-slate-800'));
@@ -554,13 +563,13 @@
       if (tabId === 'profile') renderProfileGrid();
     }
 
-    // Modals
     function openModal(id) {
       const modal = document.getElementById(id);
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       if (id === 'createTripModal') renderModalSuggestions();
     }
+    
     function closeModal(id) {
       document.getElementById(id).classList.add('hidden');
       document.getElementById(id).classList.remove('flex');
@@ -570,14 +579,28 @@
       return trip.stops.reduce((acc, stop) => acc + stop.activities.reduce((sAcc, act) => sAcc + Number(act.cost || 0), 0), 0);
     }
 
-    // 1. Render Dashboard
     function renderDashboard() {
-      document.getElementById('dashDestinationsGrid').innerHTML = PRESET_CITIES.map(c => `
-        <div class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer h-32 relative">
-          <img src="${c.image}" class="w-full h-full object-cover" />
-          <div class="absolute bottom-0 w-full bg-white/90 p-1 text-center border-t border-slate-300 text-xs font-bold">${c.name}</div>
-        </div>
-      `).join('');
+      const searchInput = document.getElementById('dashSearchInput');
+      const search = searchInput ? searchInput.value.toLowerCase() : '';
+      const costFilter = document.getElementById('dashCostFilter') ? document.getElementById('dashCostFilter').value : 'All';
+      const catFilter = document.getElementById('dashCategoryFilter') ? document.getElementById('dashCategoryFilter').value : 'All';
+
+      const filteredCities = PRESET_CITIES.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) || c.country.toLowerCase().includes(search);
+        const matchesCost = costFilter === 'All' || c.cost === costFilter;
+        const matchesCat = catFilter === 'All';
+        return matchesSearch && matchesCost && matchesCat;
+      });
+
+      const gridContainer = document.getElementById('dashDestinationsGrid');
+      if (gridContainer) {
+        gridContainer.innerHTML = filteredCities.map(c => `
+          <div class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer h-32 relative">
+            <img src="${c.image}" class="w-full h-full object-cover" />
+            <div class="absolute bottom-0 w-full bg-white/90 p-1 text-center border-t border-slate-300 text-xs font-bold">${c.name}</div>
+          </div>
+        `).join('') || `<p class="col-span-2 md:col-span-5 text-sm text-slate-400 py-4 text-center">No destinations match the selected filters.</p>`;
+      }
 
       document.getElementById('dashTripsGrid').innerHTML = myTrips.slice(0, 3).map((trip, idx) => `
         <div onclick="openTripWorkspace(${idx})" class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer flex flex-col h-48 bg-white">
@@ -592,7 +615,6 @@
       `).join('') || `<div class="col-span-3 text-center text-slate-500 py-8 border border-dashed border-slate-300 rounded-md bg-white">No previous trips found. Sign up and create one!</div>`;
     }
 
-    // 2. Render My Trips
     function renderMyTripsView() {
       const upcoming = myTrips.filter(t => !t.isCompleted);
       const completed = myTrips.filter(t => t.isCompleted);
@@ -613,7 +635,6 @@
       document.getElementById('completedTripsList').innerHTML = renderList(completed);
     }
 
-    // 3. Render Profile
     function renderProfileGrid() {
       const upcoming = myTrips.filter(t => !t.isCompleted);
       const completed = myTrips.filter(t => t.isCompleted);
@@ -630,13 +651,11 @@
       document.getElementById('profileCompletedGrid').innerHTML = generateGrid(completed) || `<p class="text-xs text-slate-400 col-span-2">No previous trips.</p>`;
     }
 
-    // 4. Render Explore Catalog (With Working Filters)
     function renderCatalog() {
       const search = document.getElementById('catalogSearchInput').value.toLowerCase();
       const costFilter = document.getElementById('catalogCostFilter').value;
       const catFilter = document.getElementById('catalogCategoryFilter').value;
       
-      // Filter Cities
       const filteredCities = PRESET_CITIES.filter(c => {
         const matchesSearch = c.name.toLowerCase().includes(search) || c.country.toLowerCase().includes(search);
         const matchesCost = costFilter === 'All' || c.cost === costFilter;
@@ -644,7 +663,6 @@
         return matchesSearch && matchesCost && matchesCat;
       });
 
-      // Filter Activities
       const filteredActivities = PRESET_ACTIVITIES.filter(a => {
         const matchesSearch = a.name.toLowerCase().includes(search) || a.city.toLowerCase().includes(search);
         const matchesCat = catFilter === 'All' || a.category === catFilter;
@@ -658,13 +676,11 @@
         return matchesSearch && matchesCat && matchesCost;
       });
 
-      // Combine both filtered arrays
       const mixedData = [
           ...filteredCities.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
           ...filteredActivities.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
       ];
 
-      // Render to the screen
       document.getElementById('catalogList').innerHTML = mixedData.map(item => `
         <div class="w-full bg-white border border-slate-300 p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer">
            <div>
@@ -688,7 +704,6 @@
       `).join('');
     }
 
-    // 5. Render Detail Timeline
     function openTripWorkspace(idx) {
       activeTripIndex = idx;
       const trip = myTrips[idx];
@@ -745,7 +760,6 @@
       document.getElementById('itineraryTimeline').innerHTML = html;
     }
 
-    // Data Handlers
     function handleCreateTrip(e) {
       e.preventDefault();
       const newTrip = {

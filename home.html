@@ -3,193 +3,503 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Globe Trotter - Smart Travel Planner</title>
-  <!-- Tailwind CSS via CDN -->
+  <title>GlobeTrotter — Smart Travel Planning & Itinerary Builder</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js for Budget Breakdown -->
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
 
-  <!-- Navbar -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="text-2xl">✈️</span>
-        <span class="text-xl font-black text-indigo-600 tracking-tight">GlobeTrotter</span>
+  <!-- ================= NAVBAR ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+        <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white text-xl font-bold shadow-md">
+          ✈️
+        </div>
+        <div>
+          <span class="text-xl font-black text-slate-900 tracking-tight">Globe<span class="text-brand-600">Trotter</span></span>
+          <span class="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-bold">Hackathon MVP</span>
+        </div>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="switchView('dashboard')" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg">My Trips</button>
-        <button onclick="openModal('createTripModal')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition">
-          + Plan New Trip
+
+      <nav class="hidden md:flex items-center space-x-1">
+        <button onclick="switchTab('dashboard')" class="nav-btn px-3 py-2 text-sm font-semibold text-slate-600 hover:text-brand-600 rounded-lg" data-tab="dashboard">Dashboard</button>
+        <button onclick="switchTab('my-trips')" class="nav-btn px-3 py-2 text-sm font-semibold text-slate-600 hover:text-brand-600 rounded-lg" data-tab="my-trips">My Trips</button>
+        <button onclick="switchTab('explore')" class="nav-btn px-3 py-2 text-sm font-semibold text-slate-600 hover:text-brand-600 rounded-lg" data-tab="explore">Explore Catalog</button>
+        <button onclick="switchTab('profile')" class="nav-btn px-3 py-2 text-sm font-semibold text-slate-600 hover:text-brand-600 rounded-lg" data-tab="profile">Profile</button>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="openModal('createTripModal')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
+          <span>+</span><span>Plan New Trip</span>
         </button>
+        <div id="userAvatar" onclick="switchTab('profile')" class="w-9 h-9 rounded-full bg-slate-200 border-2 border-brand-500 cursor-pointer overflow-hidden flex items-center justify-center text-xs font-bold text-slate-700">
+          JD
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-8">
-    
-    <!-- VIEW 1: DASHBOARD / MY TRIPS -->
-    <section id="dashboardView">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-slate-800">Your Trips</h1>
-          <p class="text-sm text-slate-500">Manage your upcoming journeys and explore itineraries.</p>
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+    <!-- 1. DASHBOARD VIEW -->
+    <section id="view-dashboard" class="tab-view space-y-8">
+      <!-- Welcome Hero -->
+      <div class="relative rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 md:p-12 overflow-hidden shadow-xl">
+        <div class="relative z-10 max-w-2xl">
+          <span class="text-xs uppercase tracking-widest text-brand-400 font-bold">Plan • Budget • Experience</span>
+          <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mt-2 leading-tight">Dream & design your next journey.</h1>
+          <p class="text-slate-300 text-sm md:text-base mt-3">Organize multi-city routes, track live budgets, discover activities, and share with your travel circle.</p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button onclick="openModal('createTripModal')" class="bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md transition">
+              Create Itinerary
+            </button>
+            <button onclick="switchTab('explore')" class="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm font-semibold text-sm px-5 py-2.5 rounded-xl transition border border-white/20">
+              Browse Destinations
+            </button>
+          </div>
         </div>
       </div>
-      <div id="tripsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Rendered via JavaScript -->
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-400">Total Trips</p>
+          <p class="text-2xl font-black text-slate-800 mt-1" id="dashTotalTrips">0</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-400">Total Budget</p>
+          <p class="text-2xl font-black text-emerald-600 mt-1" id="dashTotalBudget">$0</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-400">Stops Planned</p>
+          <p class="text-2xl font-black text-brand-600 mt-1" id="dashTotalStops">0</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold uppercase text-slate-400">Total Activities</p>
+          <p class="text-2xl font-black text-amber-500 mt-1" id="dashTotalActivities">0</p>
+        </div>
+      </div>
+
+      <!-- Recent Trips -->
+      <div>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-slate-900">Your Active Itineraries</h2>
+          <button onclick="switchTab('my-trips')" class="text-sm font-semibold text-brand-600 hover:underline">View All →</button>
+        </div>
+        <div id="dashTripsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+      <!-- Featured Cities -->
+      <div>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-slate-900">Popular Destinations</h2>
+          <button onclick="switchTab('explore')" class="text-sm font-semibold text-brand-600 hover:underline">Explore More →</button>
+        </div>
+        <div id="dashDestinationsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
       </div>
     </section>
 
-    <!-- VIEW 2: ITINERARY BUILDER & BUDGET -->
-    <section id="tripDetailView" class="hidden">
-      <button onclick="switchView('dashboard')" class="mb-4 text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1">
-        ← Back to Trips
-      </button>
-
-      <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- 2. MY TRIPS VIEW -->
+    <section id="view-my-trips" class="tab-view hidden space-y-6">
+      <div class="flex justify-between items-center">
         <div>
-          <h1 id="activeTripTitle" class="text-3xl font-extrabold text-slate-900">Trip Name</h1>
-          <p id="activeTripDates" class="text-sm text-indigo-600 font-medium mt-1">Dates</p>
-          <p id="activeTripDesc" class="text-sm text-slate-600 mt-2 max-w-xl"></p>
+          <h1 class="text-2xl font-bold text-slate-900">My Saved Trips</h1>
+          <p class="text-sm text-slate-500">Access, edit, clone, or delete your customized itineraries.</p>
         </div>
-        <div class="flex gap-2">
-          <button onclick="openModal('addStopModal')" class="bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 text-sm font-semibold px-4 py-2 rounded-lg">
-            + Add Destination Stop
+        <button onclick="openModal('createTripModal')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm">
+          + New Trip
+        </button>
+      </div>
+      <div id="allTripsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- 3. EXPLORE & SEARCH CATALOG (CITIES & ACTIVITIES) -->
+    <section id="view-explore" class="tab-view hidden space-y-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Destinations & Activities Catalog</h1>
+        <p class="text-sm text-slate-500">Search global cities and pre-curated experiences to add straight to your itinerary.</p>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3">
+        <input type="text" id="catalogSearchInput" oninput="renderCatalog()" placeholder="Search cities or activities (e.g. Rome, Museum, Cruise)..." class="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
+        <select id="catalogCostFilter" onchange="renderCatalog()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none">
+          <option value="All">All Cost Tiers</option>
+          <option value="Budget">Budget</option>
+          <option value="Moderate">Moderate</option>
+          <option value="Luxury">Luxury</option>
+        </select>
+        <select id="catalogCategoryFilter" onchange="renderCatalog()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none">
+          <option value="All">All Activity Categories</option>
+          <option value="Sightseeing">Sightseeing</option>
+          <option value="Food">Food & Dining</option>
+          <option value="Adventure">Adventure</option>
+          <option value="Transport">Transport</option>
+          <option value="Stay">Stay</option>
+        </select>
+      </div>
+
+      <!-- Cities Grid -->
+      <div>
+        <h2 class="text-lg font-bold text-slate-800 mb-3">Featured Global Cities</h2>
+        <div id="catalogCitiesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"></div>
+      </div>
+
+      <!-- Activities Grid -->
+      <div>
+        <h2 class="text-lg font-bold text-slate-800 mb-3">Popular Activities & Experiences</h2>
+        <div id="catalogActivitiesGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- 4. TRIP DETAIL / WORKSPACE (ITINERARY BUILDER, BUDGET & CALENDAR) -->
+    <section id="view-trip-detail" class="tab-view hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="switchTab('my-trips')" class="text-sm font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1">
+          ← Back to Trips
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="openShareModal()" class="border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-sm">
+            🔗 Public Share Link
+          </button>
+          <button onclick="deleteCurrentTrip()" class="text-rose-600 hover:bg-rose-50 text-xs font-bold px-3 py-2 rounded-xl">
+            Delete Trip
           </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Itinerary Stops List (Left 2 Columns) -->
-        <div class="lg:col-span-2 space-y-6" id="stopsContainer">
-          <!-- Rendered via JavaScript -->
-        </div>
-
-        <!-- Budget Summary (Right 1 Column) -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm h-fit sticky top-24">
-          <h3 class="text-lg font-bold text-slate-800 mb-1">Budget Breakdown</h3>
-          <p class="text-3xl font-black text-indigo-600 mb-4" id="totalCostDisplay">$0.00</p>
-          <div class="h-60 flex items-center justify-center">
-            <canvas id="budgetChart"></canvas>
+      <!-- Header Card -->
+      <div class="relative bg-slate-900 rounded-3xl overflow-hidden shadow-lg text-white">
+        <img id="detailTripBg" src="" class="absolute inset-0 w-full h-full object-cover opacity-30" />
+        <div class="relative p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span id="detailTripDatesBadge" class="text-xs bg-brand-500/80 backdrop-blur-sm px-3 py-1 rounded-full font-bold"></span>
+              <span id="detailTripStopsCount" class="text-xs bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full font-medium"></span>
+            </div>
+            <h1 id="detailTripTitle" class="text-2xl md:text-4xl font-black"></h1>
+            <p id="detailTripDesc" class="text-slate-300 text-sm mt-2 max-w-2xl"></p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="openModal('addStopModal')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow transition">
+              + Add City Stop
+            </button>
           </div>
         </div>
+      </div>
+
+      <!-- Workspace Sub-Tabs -->
+      <div class="border-b border-slate-200 flex gap-4">
+        <button onclick="switchDetailTab('builder')" id="tabBtn-builder" class="detail-tab-btn pb-3 text-sm font-bold border-b-2 border-brand-600 text-brand-600">
+          📍 Itinerary Builder & Stops
+        </button>
+        <button onclick="switchDetailTab('budget')" id="tabBtn-budget" class="detail-tab-btn pb-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+          💰 Budget & Analytics
+        </button>
+        <button onclick="switchDetailTab('timeline')" id="tabBtn-timeline" class="detail-tab-btn pb-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+          📅 Timeline / Calendar View
+        </button>
+      </div>
+
+      <!-- SUB-TAB 1: BUILDER -->
+      <div id="subView-builder" class="space-y-6">
+        <div id="tripStopsList" class="space-y-6"></div>
+      </div>
+
+      <!-- SUB-TAB 2: BUDGET & ANALYTICS -->
+      <div id="subView-budget" class="hidden space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-1 flex flex-col justify-between">
+            <div>
+              <span class="text-xs uppercase font-bold text-slate-400">Total Trip Cost</span>
+              <p class="text-4xl font-black text-brand-600 mt-2" id="budgetTotalDisplay">$0.00</p>
+              <div class="mt-4 space-y-2 text-sm">
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                  <span class="text-slate-500">Number of Stops:</span>
+                  <span class="font-bold" id="budgetStopCount">0</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                  <span class="text-slate-500">Activities Planned:</span>
+                  <span class="font-bold" id="budgetActCount">0</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                  <span class="text-slate-500">Average Cost / Day:</span>
+                  <span class="font-bold text-emerald-600" id="budgetAvgPerDay">$0.00</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 p-3 bg-brand-50 rounded-xl border border-brand-100 text-xs text-brand-800 font-medium">
+              💡 Tip: Balances update instantly when activities or transportation are added.
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-2">
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Category Spending Breakdown</h3>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="budgetBreakdownChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 3: TIMELINE / CALENDAR -->
+      <div id="subView-timeline" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="text-lg font-bold text-slate-800 mb-4">Sequential Journey Flow</h3>
+          <div id="timelineContainer" class="relative pl-6 border-l-2 border-brand-200 space-y-8"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. USER PROFILE & SETTINGS -->
+    <section id="view-profile" class="tab-view hidden max-w-2xl mx-auto space-y-6">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">User Profile & Preferences</h1>
+        <p class="text-sm text-slate-500">Manage account information and travel settings.</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Full Name</label>
+          <input type="text" id="profileName" value="Alex Johnson" class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Email Address</label>
+          <input type="email" id="profileEmail" value="alex.traveler@example.com" class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Preferred Currency</label>
+          <select class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none">
+            <option>USD ($)</option>
+            <option>EUR (€)</option>
+            <option>GBP (£)</option>
+            <option>INR (₹)</option>
+          </select>
+        </div>
+        <button onclick="alert('Profile changes saved successfully!')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition">
+          Save Preferences
+        </button>
       </div>
     </section>
 
   </main>
 
+  <!-- ================= MODALS ================= -->
+
   <!-- MODAL: CREATE TRIP -->
-  <div id="createTripModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
-      <h3 class="text-xl font-bold text-slate-800 mb-4">Plan a New Trip</h3>
+  <div id="createTripModal" class="modal-overlay fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-slate-900">Create New Itinerary</h3>
+        <button onclick="closeModal('createTripModal')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      </div>
       <form onsubmit="handleCreateTrip(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trip Name</label>
-          <input id="newTripName" required placeholder="e.g. Euro Summer Tour" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Trip Name</label>
+          <input id="formTripTitle" required placeholder="e.g., Grand Tour of Japan" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Start Date</label>
-            <input type="date" id="newTripStart" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Start Date</label>
+            <input type="date" id="formTripStart" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">End Date</label>
-            <input type="date" id="newTripEnd" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">End Date</label>
+            <input type="date" id="formTripEnd" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cover Image URL</label>
-          <input id="newTripImage" placeholder="https://images.unsplash.com/..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Description</label>
+          <textarea id="formTripDesc" rows="2" placeholder="Brief summary of your adventure..." class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cover Image URL (Optional)</label>
+          <input id="formTripImage" placeholder="https://images.unsplash.com/..." class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('createTripModal')" class="px-4 py-2 text-sm font-semibold text-slate-600">Cancel</button>
-          <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700">Create</button>
+          <button type="button" onclick="closeModal('createTripModal')" class="px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-800">Cancel</button>
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-5 py-2 rounded-xl shadow">Create Trip</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: ADD STOP / CITY -->
-  <div id="addStopModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
-      <h3 class="text-xl font-bold text-slate-800 mb-4">Add Destination Stop</h3>
+  <div id="addStopModal" class="modal-overlay fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-slate-900">Add City Destination</h3>
+        <button onclick="closeModal('addStopModal')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      </div>
       <form onsubmit="handleAddStop(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">City Name</label>
-          <input id="stopCity" required placeholder="e.g. Paris" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Select Preset or Type City</label>
+          <input id="formStopCity" required placeholder="e.g. Kyoto" class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Country</label>
-          <input id="stopCountry" required placeholder="e.g. France" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Country</label>
+          <input id="formStopCountry" required placeholder="e.g. Japan" class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Arrival Date</label>
+            <input type="date" id="formStopStart" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Departure Date</label>
+            <input type="date" id="formStopEnd" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
+          </div>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('addStopModal')" class="px-4 py-2 text-sm font-semibold text-slate-600">Cancel</button>
-          <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700">Add Stop</button>
+          <button type="button" onclick="closeModal('addStopModal')" class="px-4 py-2 text-sm font-semibold text-slate-500">Cancel</button>
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-5 py-2 rounded-xl">Add Destination</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: ADD ACTIVITY -->
-  <div id="addActivityModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
-      <h3 class="text-xl font-bold text-slate-800 mb-4">Add Activity</h3>
+  <div id="addActivityModal" class="modal-overlay fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-slate-900">Add Planned Activity</h3>
+        <button onclick="closeModal('addActivityModal')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      </div>
       <form onsubmit="handleAddActivity(event)" class="space-y-4">
-        <input type="hidden" id="targetStopIndex" />
+        <input type="hidden" id="formTargetStopIdx" />
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Activity Name</label>
-          <input id="actName" required placeholder="e.g. Louvre Museum Visit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Activity Name</label>
+          <input id="formActName" required placeholder="e.g. Fushimi Inari Shrine Tour" class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Category</label>
-            <select id="actCategory" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Category</label>
+            <select id="formActCategory" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none">
               <option value="Sightseeing">Sightseeing</option>
-              <option value="Food">Food</option>
-              <option value="Stay">Stay</option>
+              <option value="Food">Food & Dining</option>
+              <option value="Stay">Stay / Hotel</option>
               <option value="Transport">Transport</option>
+              <option value="Adventure">Adventure</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Estimated Cost ($)</label>
-            <input type="number" step="0.01" id="actCost" required placeholder="25.00" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" />
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cost ($)</label>
+            <input type="number" step="0.01" id="formActCost" required placeholder="25.00" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Day #</label>
+            <input type="number" id="formActDay" value="1" min="1" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Time (Optional)</label>
+            <input type="text" id="formActTime" placeholder="10:00 AM" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none" />
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('addActivityModal')" class="px-4 py-2 text-sm font-semibold text-slate-600">Cancel</button>
-          <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700">Add</button>
+          <button type="button" onclick="closeModal('addActivityModal')" class="px-4 py-2 text-sm font-semibold text-slate-500">Cancel</button>
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-5 py-2 rounded-xl">Add Activity</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL: SHARE TRIP -->
+  <div id="shareModal" class="modal-overlay fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xl font-bold text-slate-900">Share Itinerary</h3>
+        <button onclick="closeModal('shareModal')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-500">Anyone with this link can view a clean, read-only version of your itinerary and budget breakdown.</p>
+      <div class="flex items-center gap-2">
+        <input id="shareLinkInput" readonly class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-700 outline-none" />
+        <button onclick="copyShareLink()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-xl">Copy</button>
+      </div>
+      <div id="copySuccessAlert" class="hidden text-xs text-emerald-600 font-bold">✓ Copied to clipboard!</div>
+      <div class="pt-2">
+        <button onclick="cloneCurrentTrip()" class="w-full border border-brand-200 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-xs py-2.5 rounded-xl">
+          📋 Clone / Duplicate This Trip
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
-    // Initial Seed Data
-    let trips = JSON.parse(localStorage.getItem('gt_trips')) || [
+    // Master Catalog Data (Relational Presets)
+    const PRESET_CITIES = [
+      { id: 'c1', name: 'Paris', country: 'France', costIndex: 'Luxury', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600' },
+      { id: 'c2', name: 'Tokyo', country: 'Japan', costIndex: 'Moderate', image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=600' },
+      { id: 'c3', name: 'Rome', country: 'Italy', costIndex: 'Moderate', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600' },
+      { id: 'c4', name: 'Bangkok', country: 'Thailand', costIndex: 'Budget', image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600' }
+    ];
+
+    const PRESET_ACTIVITIES = [
+      { name: 'Eiffel Tower Summit', city: 'Paris', category: 'Sightseeing', cost: 35, duration: '2.5 hrs' },
+      { name: 'Louvre Museum Tour', city: 'Paris', category: 'Sightseeing', cost: 22, duration: '3.0 hrs' },
+      { name: 'Seine Gourmet Dinner Cruise', city: 'Paris', category: 'Food', cost: 95, duration: '2.0 hrs' },
+      { name: 'Shibuya Crossing Street Food', city: 'Tokyo', category: 'Food', cost: 45, duration: '2.0 hrs' },
+      { name: 'TeamLab Planets Museum', city: 'Tokyo', category: 'Adventure', cost: 32, duration: '2.5 hrs' },
+      { name: 'Colosseum & Forum Guided Tour', city: 'Rome', category: 'Sightseeing', cost: 30, duration: '3.0 hrs' },
+      { name: 'Grand Palace & Emerald Buddha', city: 'Bangkok', category: 'Sightseeing', cost: 15, duration: '2.5 hrs' }
+    ];
+
+    const CATEGORY_COLORS = {
+      Sightseeing: 'bg-amber-100 text-amber-800 border-amber-300',
+      Food: 'bg-rose-100 text-rose-800 border-rose-300',
+      Stay: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+      Transport: 'bg-blue-100 text-blue-800 border-blue-300',
+      Adventure: 'bg-purple-100 text-purple-800 border-purple-300'
+    };
+
+    // State Management
+    let trips = JSON.parse(localStorage.getItem('globetrotter_trips')) || [
       {
-        id: 1,
-        title: "European Getaway",
-        start: "2026-09-10",
-        end: "2026-09-18",
-        desc: "Exploring history, architecture, and food across France and Italy.",
-        image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
+        id: 't-1',
+        title: 'Euro Odyssey 2026',
+        desc: 'Exploring art, historic monuments, and culinary delights in France and Italy.',
+        startDate: '2026-09-10',
+        endDate: '2026-09-18',
+        image: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800',
         stops: [
           {
-            city: "Paris",
-            country: "France",
+            id: 's-1',
+            city: 'Paris',
+            country: 'France',
+            startDate: '2026-09-10',
+            endDate: '2026-09-14',
+            image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600',
             activities: [
-              { name: "Eiffel Tower Visit", category: "Sightseeing", cost: 35 },
-              { name: "Seine River Dinner", category: "Food", cost: 80 }
+              { name: 'Eiffel Tower Summit', category: 'Sightseeing', cost: 35, dayNumber: 1, time: '10:00 AM' },
+              { name: 'Seine Gourmet Dinner Cruise', category: 'Food', cost: 95, dayNumber: 1, time: '07:30 PM' },
+              { name: 'Louvre Museum Tour', category: 'Sightseeing', cost: 22, dayNumber: 2, time: '09:30 AM' }
             ]
           },
           {
-            city: "Rome",
-            country: "Italy",
+            id: 's-2',
+            city: 'Rome',
+            country: 'Italy',
+            startDate: '2026-09-14',
+            endDate: '2026-09-18',
+            image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600',
             activities: [
-              { name: "Colosseum Tour", category: "Sightseeing", cost: 30 },
-              { name: "Pasta Cooking Class", category: "Food", cost: 65 }
+              { name: 'Colosseum & Forum Guided Tour', category: 'Sightseeing', cost: 30, dayNumber: 5, time: '11:00 AM' }
             ]
           }
         ]
@@ -197,157 +507,460 @@
     ];
 
     let activeTripIndex = 0;
-    let chartInstance = null;
+    let budgetChartInstance = null;
 
-    function saveAndRender() {
-      localStorage.setItem('gt_trips', JSON.stringify(trips));
-      renderTrips();
+    function saveState() {
+      localStorage.setItem('globetrotter_trips', JSON.stringify(trips));
+      renderDashboard();
+      renderMyTrips();
     }
 
-    function switchView(view) {
-      document.getElementById('dashboardView').classList.toggle('hidden', view !== 'dashboard');
-      document.getElementById('tripDetailView').classList.toggle('hidden', view !== 'detail');
-      if (view === 'detail') renderTripDetail();
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-brand-600', 'bg-brand-50'));
+
+      const target = document.getElementById(`view-${tabId}`);
+      if (target) target.classList.remove('hidden');
+
+      const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
+      if (activeBtn) activeBtn.classList.add('text-brand-600', 'bg-brand-50');
+
+      if (tabId === 'dashboard') renderDashboard();
+      if (tabId === 'my-trips') renderMyTrips();
+      if (tabId === 'explore') renderCatalog();
     }
 
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+    function switchDetailTab(subTab) {
+      ['builder', 'budget', 'timeline'].forEach(t => {
+        document.getElementById(`subView-${t}`).classList.toggle('hidden', t !== subTab);
+        document.getElementById(`tabBtn-${t}`).classList.toggle('border-brand-600', t === subTab);
+        document.getElementById(`tabBtn-${t}`).classList.toggle('text-brand-600', t === subTab);
+      });
+      if (subTab === 'budget') renderBudgetBreakdown();
+      if (subTab === 'timeline') renderTimeline();
+    }
 
-    function renderTrips() {
-      const grid = document.getElementById('tripsGrid');
-      grid.innerHTML = trips.map((trip, idx) => `
-        <div onclick="selectTrip(${idx})" class="cursor-pointer bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
-          <div class="h-40 bg-slate-800 relative">
-            <img src="${trip.image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800'}" class="w-full h-full object-cover opacity-70" />
-            <div class="absolute bottom-3 left-4 text-white">
-              <span class="text-xs bg-indigo-600 px-2 py-0.5 rounded font-semibold">${trip.stops.length} Stops</span>
-              <h3 class="font-bold text-lg leading-tight mt-1">${trip.title}</h3>
-            </div>
+    // Modal Helpers
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Metrics Calculation
+    function calculateTotalCost(trip) {
+      return trip.stops.reduce((acc, stop) =>
+        acc + stop.activities.reduce((sAcc, act) => sAcc + Number(act.cost || 0), 0), 0
+      );
+    }
+
+    // Render Dashboard
+    function renderDashboard() {
+      const totalTrips = trips.length;
+      const totalStops = trips.reduce((acc, t) => acc + t.stops.length, 0);
+      const totalActivities = trips.reduce((acc, t) => acc + t.stops.reduce((s, st) => s + st.activities.length, 0), 0);
+      const grandBudget = trips.reduce((acc, t) => acc + calculateTotalCost(t), 0);
+
+      document.getElementById('dashTotalTrips').innerText = totalTrips;
+      document.getElementById('dashTotalStops').innerText = totalStops;
+      document.getElementById('dashTotalActivities').innerText = totalActivities;
+      document.getElementById('dashTotalBudget').innerText = `$${grandBudget.toFixed(2)}`;
+
+      const dashGrid = document.getElementById('dashTripsGrid');
+      dashGrid.innerHTML = trips.slice(0, 3).map((trip, idx) => renderTripCardHTML(trip, idx)).join('');
+
+      const destGrid = document.getElementById('dashDestinationsGrid');
+      destGrid.innerHTML = PRESET_CITIES.map(c => `
+        <div onclick="quickAddCityToActiveTrip('${c.name}', '${c.country}')" class="group cursor-pointer bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
+          <div class="h-28 overflow-hidden relative">
+            <img src="${c.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+            <span class="absolute top-2 right-2 text-[10px] bg-slate-900/80 backdrop-blur-sm text-white px-2 py-0.5 rounded font-bold">${c.costIndex}</span>
           </div>
-          <div class="p-4 flex justify-between items-center text-xs text-slate-500">
-            <span>📅 ${trip.start} to ${trip.end}</span>
-            <span class="font-bold text-indigo-600 text-sm">$${calculateTripTotal(trip)}</span>
+          <div class="p-3">
+            <h4 class="font-bold text-sm text-slate-900">${c.name}</h4>
+            <p class="text-xs text-slate-500">${c.country}</p>
           </div>
         </div>
       `).join('');
     }
 
-    function calculateTripTotal(trip) {
-      return trip.stops.reduce((acc, stop) => 
-        acc + stop.activities.reduce((sAcc, act) => sAcc + Number(act.cost), 0), 0
-      ).toFixed(2);
+    // Render My Trips
+    function renderMyTrips() {
+      const grid = document.getElementById('allTripsGrid');
+      grid.innerHTML = trips.map((trip, idx) => renderTripCardHTML(trip, idx)).join('');
     }
 
-    function selectTrip(idx) {
-      activeTripIndex = idx;
-      switchView('detail');
-    }
-
-    function renderTripDetail() {
-      const trip = trips[activeTripIndex];
-      document.getElementById('activeTripTitle').innerText = trip.title;
-      document.getElementById('activeTripDates').innerText = `${trip.start} to ${trip.end}`;
-      document.getElementById('activeTripDesc').innerText = trip.desc || '';
-      document.getElementById('totalCostDisplay').innerText = `$${calculateTripTotal(trip)}`;
-
-      const stopsContainer = document.getElementById('stopsContainer');
-      stopsContainer.innerHTML = trip.stops.map((stop, sIdx) => `
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
-            <div>
-              <span class="text-xs text-indigo-400 font-bold uppercase">Stop ${sIdx + 1}</span>
-              <h3 class="text-xl font-bold">${stop.city}, ${stop.country}</h3>
+    function renderTripCardHTML(trip, idx) {
+      const cost = calculateTotalCost(trip);
+      return `
+        <div onclick="openTripWorkspace(${idx})" class="cursor-pointer bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+          <div>
+            <div class="h-40 bg-slate-900 relative">
+              <img src="${trip.image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800'}" class="w-full h-full object-cover opacity-75" />
+              <div class="absolute bottom-3 left-3 text-white">
+                <span class="text-[10px] bg-brand-600 px-2 py-0.5 rounded-full font-bold">${trip.stops.length} STOPS</span>
+                <h3 class="font-bold text-lg leading-tight mt-1">${trip.title}</h3>
+              </div>
             </div>
-            <button onclick="prepareAddActivity(${sIdx})" class="text-xs bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg font-medium">+ Add Activity</button>
+            <div class="p-4">
+              <p class="text-xs text-slate-500 line-clamp-2">${trip.desc || 'No description provided.'}</p>
+            </div>
           </div>
-          <div class="p-4 divide-y divide-slate-100">
-            ${stop.activities.length === 0 ? '<p class="text-xs text-slate-400 italic">No activities planned.</p>' : ''}
-            ${stop.activities.map(act => `
-              <div class="py-2.5 flex justify-between items-center">
-                <div>
-                  <p class="text-sm font-semibold text-slate-800">${act.name}</p>
-                  <span class="text-[10px] px-2 py-0.5 rounded font-semibold bg-slate-100 text-slate-600">${act.category}</span>
+          <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+            <span class="text-slate-500">📅 ${trip.startDate}</span>
+            <span class="font-extrabold text-brand-600 text-sm">$${cost.toFixed(2)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Open Workspace
+    function openTripWorkspace(idx) {
+      activeTripIndex = idx;
+      const trip = trips[idx];
+
+      document.getElementById('detailTripTitle').innerText = trip.title;
+      document.getElementById('detailTripDesc').innerText = trip.desc;
+      document.getElementById('detailTripDatesBadge').innerText = `📅 ${trip.startDate} → ${trip.endDate}`;
+      document.getElementById('detailTripStopsCount').innerText = `${trip.stops.length} Destinations`;
+      document.getElementById('detailTripBg').src = trip.image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800';
+
+      renderTripStops();
+      switchTab('trip-detail');
+      switchDetailTab('builder');
+    }
+
+    // Render Stops in Workspace
+    function renderTripStops() {
+      const trip = trips[activeTripIndex];
+      const container = document.getElementById('tripStopsList');
+
+      if (!trip.stops || trip.stops.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-white rounded-3xl border border-dashed border-slate-300 p-8">
+            <p class="text-slate-400 font-semibold text-sm">No destinations added yet.</p>
+            <button onclick="openModal('addStopModal')" class="mt-3 bg-brand-600 text-white text-xs font-bold px-4 py-2 rounded-xl">Add Your First Destination</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = trip.stops.map((stop, sIdx) => `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div class="bg-slate-900 text-white p-5 flex flex-col sm:flex-row justify-between sm:items-center gap-3 relative">
+            <img src="${stop.image || 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600'}" class="absolute inset-0 w-full h-full object-cover opacity-25" />
+            <div class="relative z-10">
+              <span class="text-[10px] text-brand-400 font-extrabold uppercase tracking-widest">STOP ${sIdx + 1}</span>
+              <h3 class="text-xl font-bold">${stop.city}, ${stop.country}</h3>
+              <p class="text-xs text-slate-300">Stay: ${stop.startDate || 'N/A'} to ${stop.endDate || 'N/A'}</p>
+            </div>
+            <div class="relative z-10 flex gap-2">
+              <button onclick="openAddActivityModal(${sIdx})" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-2 rounded-xl transition">
+                + Activity
+              </button>
+              <button onclick="removeStop(${sIdx})" class="bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 text-xs px-2.5 py-2 rounded-xl transition">
+                ✕
+              </button>
+            </div>
+          </div>
+          <div class="p-5 divide-y divide-slate-100">
+            ${stop.activities.length === 0 ? '<p class="text-xs text-slate-400 italic py-2">No activities scheduled for this stop.</p>' : ''}
+            ${stop.activities.map((act, aIdx) => `
+              <div class="py-3 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div class="text-center min-w-[50px] bg-slate-50 border border-slate-200 rounded-lg p-1.5">
+                    <span class="text-[10px] font-black text-brand-600 block">DAY ${act.dayNumber || 1}</span>
+                    <span class="text-[9px] text-slate-400 block">${act.time || 'Anytime'}</span>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-sm text-slate-800">${act.name}</p>
+                    <span class="inline-block text-[10px] px-2 py-0.5 rounded-full font-bold border ${CATEGORY_COLORS[act.category] || 'bg-slate-100 text-slate-700'} mt-1">
+                      ${act.category}
+                    </span>
+                  </div>
                 </div>
-                <span class="text-sm font-bold text-slate-900">$${Number(act.cost).toFixed(2)}</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-bold text-slate-900 text-sm">$${Number(act.cost).toFixed(2)}</span>
+                  <button onclick="removeActivity(${sIdx}, ${aIdx})" class="text-slate-300 hover:text-rose-500 text-xs font-bold">✕</button>
+                </div>
               </div>
             `).join('')}
           </div>
         </div>
       `).join('');
-
-      renderChart(trip);
     }
 
-    function renderChart(trip) {
-      const totals = { Sightseeing: 0, Food: 0, Stay: 0, Transport: 0 };
+    // Render Budget Analytics
+    function renderBudgetBreakdown() {
+      const trip = trips[activeTripIndex];
+      const totalCost = calculateTotalCost(trip);
+      const stopCount = trip.stops.length;
+      const actCount = trip.stops.reduce((acc, s) => acc + s.activities.length, 0);
+
+      document.getElementById('budgetTotalDisplay').innerText = `$${totalCost.toFixed(2)}`;
+      document.getElementById('budgetStopCount').innerText = stopCount;
+      document.getElementById('budgetActCount').innerText = actCount;
+      document.getElementById('budgetAvgPerDay').innerText = `$${(totalCost / Math.max(1, actCount)).toFixed(2)}`;
+
+      const categoryTotals = { Sightseeing: 0, Food: 0, Stay: 0, Transport: 0, Adventure: 0 };
       trip.stops.forEach(s => s.activities.forEach(a => {
-        totals[a.category] = (totals[a.category] || 0) + Number(a.cost);
+        categoryTotals[a.category] = (categoryTotals[a.category] || 0) + Number(a.cost || 0);
       }));
 
-      const ctx = document.getElementById('budgetChart').getContext('2d');
-      if (chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(ctx, {
+      const ctx = document.getElementById('budgetBreakdownChart').getContext('2d');
+      if (budgetChartInstance) budgetChartInstance.destroy();
+
+      budgetChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: Object.keys(totals),
+          labels: Object.keys(categoryTotals),
           datasets: [{
-            data: Object.values(totals),
-            backgroundColor: ['#F59E0B', '#EF4444', '#10B981', '#3B82F6']
+            data: Object.values(categoryTotals),
+            backgroundColor: ['#F59E0B', '#EF4444', '#10B981', '#3B82F6', '#8B5CF6']
           }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } }
+        }
       });
     }
 
+    // Render Timeline
+    function renderTimeline() {
+      const trip = trips[activeTripIndex];
+      const container = document.getElementById('timelineContainer');
+      let html = '';
+
+      trip.stops.forEach((stop, sIdx) => {
+        html += `
+          <div class="relative mb-6">
+            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-brand-600 border-4 border-white shadow"></div>
+            <h4 class="font-bold text-slate-900 text-base">${stop.city}, ${stop.country}</h4>
+            <p class="text-xs text-slate-400 mb-3">${stop.startDate} to ${stop.endDate}</p>
+            <div class="space-y-2">
+              ${stop.activities.map(a => `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center text-xs">
+                  <div>
+                    <span class="font-bold text-brand-600 mr-2">Day ${a.dayNumber}:</span>
+                    <span class="font-semibold text-slate-800">${a.name}</span>
+                    <span class="text-slate-400 text-[10px] ml-1">(${a.time || 'Day'})</span>
+                  </div>
+                  <span class="font-bold text-slate-900">$${Number(a.cost).toFixed(2)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html || '<p class="text-xs text-slate-400 italic">No timeline items found.</p>';
+    }
+
+    // Render Explore Catalog
+    function renderCatalog() {
+      const search = document.getElementById('catalogSearchInput').value.toLowerCase();
+      const costFilter = document.getElementById('catalogCostFilter').value;
+      const catFilter = document.getElementById('catalogCategoryFilter').value;
+
+      const filteredCities = PRESET_CITIES.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) || c.country.toLowerCase().includes(search);
+        const matchesCost = costFilter === 'All' || c.costIndex === costFilter;
+        return matchesSearch && matchesCost;
+      });
+
+      document.getElementById('catalogCitiesGrid').innerHTML = filteredCities.map(c => `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+          <div class="h-32 relative">
+            <img src="${c.image}" class="w-full h-full object-cover" />
+            <span class="absolute top-2 right-2 text-[10px] bg-slate-900/80 text-white px-2 py-0.5 rounded font-bold">${c.costIndex}</span>
+          </div>
+          <div class="p-3">
+            <h4 class="font-bold text-sm text-slate-900">${c.name}</h4>
+            <p class="text-xs text-slate-500 mb-3">${c.country}</p>
+            <button onclick="quickAddCityToActiveTrip('${c.name}', '${c.country}')" class="w-full bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-bold py-1.5 rounded-lg border border-brand-200">
+              + Add to Trip
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      const filteredActivities = PRESET_ACTIVITIES.filter(a => {
+        const matchesSearch = a.name.toLowerCase().includes(search) || a.city.toLowerCase().includes(search);
+        const matchesCat = catFilter === 'All' || a.category === catFilter;
+        return matchesSearch && matchesCat;
+      });
+
+      document.getElementById('catalogActivitiesGrid').innerHTML = filteredActivities.map(a => `
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex justify-between items-center">
+          <div>
+            <span class="text-[10px] font-bold text-brand-600 uppercase">${a.city}</span>
+            <h4 class="font-bold text-sm text-slate-900">${a.name}</h4>
+            <div class="flex gap-2 text-xs text-slate-400 mt-1">
+              <span>${a.category}</span> • <span>${a.duration}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-sm text-slate-900 mb-1">$${a.cost}</p>
+            <button onclick="quickAddActivity('${a.name}', '${a.category}', ${a.cost})" class="bg-brand-600 hover:bg-brand-700 text-white text-[11px] font-bold px-3 py-1 rounded-lg">
+              Add
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Action Handlers
     function handleCreateTrip(e) {
       e.preventDefault();
-      trips.push({
-        id: Date.now(),
-        title: document.getElementById('newTripName').value,
-        start: document.getElementById('newTripStart').value,
-        end: document.getElementById('newTripEnd').value,
-        image: document.getElementById('newTripImage').value,
+      const newTrip = {
+        id: 't-' + Date.now(),
+        title: document.getElementById('formTripTitle').value,
+        startDate: document.getElementById('formTripStart').value,
+        endDate: document.getElementById('formTripEnd').value,
+        desc: document.getElementById('formTripDesc').value,
+        image: document.getElementById('formTripImage').value || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800',
         stops: []
-      });
+      };
+      trips.unshift(newTrip);
       closeModal('createTripModal');
       e.target.reset();
-      saveAndRender();
+      saveState();
+      openTripWorkspace(0);
     }
 
     function handleAddStop(e) {
       e.preventDefault();
       trips[activeTripIndex].stops.push({
-        city: document.getElementById('stopCity').value,
-        country: document.getElementById('stopCountry').value,
+        id: 's-' + Date.now(),
+        city: document.getElementById('formStopCity').value,
+        country: document.getElementById('formStopCountry').value,
+        startDate: document.getElementById('formStopStart').value,
+        endDate: document.getElementById('formStopEnd').value,
+        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600',
         activities: []
       });
       closeModal('addStopModal');
       e.target.reset();
-      saveAndRender();
-      renderTripDetail();
+      saveState();
+      renderTripStops();
     }
 
-    function prepareAddActivity(stopIdx) {
-      document.getElementById('targetStopIndex').value = stopIdx;
+    function openAddActivityModal(stopIdx) {
+      document.getElementById('formTargetStopIdx').value = stopIdx;
       openModal('addActivityModal');
     }
 
     function handleAddActivity(e) {
       e.preventDefault();
-      const sIdx = document.getElementById('targetStopIndex').value;
-      trips[activeTripIndex].stops[sIdx].activities.push({
-        name: document.getElementById('actName').value,
-        category: document.getElementById('actCategory').value,
-        cost: Number(document.getElementById('actCost').value)
+      const stopIdx = document.getElementById('formTargetStopIdx').value;
+      trips[activeTripIndex].stops[stopIdx].activities.push({
+        name: document.getElementById('formActName').value,
+        category: document.getElementById('formActCategory').value,
+        cost: Number(document.getElementById('formActCost').value),
+        dayNumber: Number(document.getElementById('formActDay').value || 1),
+        time: document.getElementById('formActTime').value || 'Anytime'
       });
       closeModal('addActivityModal');
       e.target.reset();
-      saveAndRender();
-      renderTripDetail();
+      saveState();
+      renderTripStops();
     }
 
-    // Initialize
-    saveAndRender();
+    function removeStop(sIdx) {
+      if (confirm('Delete this destination stop?')) {
+        trips[activeTripIndex].stops.splice(sIdx, 1);
+        saveState();
+        renderTripStops();
+      }
+    }
+
+    function removeActivity(sIdx, aIdx) {
+      trips[activeTripIndex].stops[sIdx].activities.splice(aIdx, 1);
+      saveState();
+      renderTripStops();
+    }
+
+    function deleteCurrentTrip() {
+      if (confirm('Delete this entire trip?')) {
+        trips.splice(activeTripIndex, 1);
+        saveState();
+        switchTab('my-trips');
+      }
+    }
+
+    function quickAddCityToActiveTrip(city, country) {
+      if (trips.length === 0) {
+        alert('Please create a trip first!');
+        return;
+      }
+      trips[activeTripIndex].stops.push({
+        id: 's-' + Date.now(),
+        city: city,
+        country: country,
+        startDate: trips[activeTripIndex].startDate,
+        endDate: trips[activeTripIndex].endDate,
+        image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=600',
+        activities: []
+      });
+      saveState();
+      alert(`Added ${city} to your current itinerary!`);
+    }
+
+    function quickAddActivity(name, category, cost) {
+      if (!trips[activeTripIndex] || trips[activeTripIndex].stops.length === 0) {
+        alert('Please add a destination stop to your trip first!');
+        return;
+      }
+      trips[activeTripIndex].stops[0].activities.push({
+        name: name,
+        category: category,
+        cost: cost,
+        dayNumber: 1,
+        time: '12:00 PM'
+      });
+      saveState();
+      alert(`Added "${name}" to Stop 1!`);
+    }
+
+    // Share & Clone Flow
+    function openShareModal() {
+      const trip = trips[activeTripIndex];
+      const url = `${window.location.origin}${window.location.pathname}?share=${trip.id}`;
+      document.getElementById('shareLinkInput').value = url;
+      openModal('shareModal');
+    }
+
+    function copyShareLink() {
+      const input = document.getElementById('shareLinkInput');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      const alertBox = document.getElementById('copySuccessAlert');
+      alertBox.classList.remove('hidden');
+      setTimeout(() => alertBox.classList.add('hidden'), 2500);
+    }
+
+    function cloneCurrentTrip() {
+      const trip = trips[activeTripIndex];
+      const cloned = JSON.parse(JSON.stringify(trip));
+      cloned.id = 't-' + Date.now();
+      cloned.title = `${cloned.title} (Copy)`;
+      trips.unshift(cloned);
+      saveState();
+      closeModal('shareModal');
+      openTripWorkspace(0);
+      alert('Trip duplicated successfully!');
+    }
+
+    // Initialize App
+    saveState();
+    switchTab('dashboard');
   </script>
 </body>
 </html>

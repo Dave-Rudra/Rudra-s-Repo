@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobeTrotter - Travel App</title>
+    <style>
+        /* Base Styling & Background */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        /* Controls Header */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 180px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        /* Grid Layout */
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        /* Card Graphics & Design */
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            color: #1e3c72;
+            font-size: 18px;
+        }
+        .card p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #555;
+        }
+        .info-text {
+            margin-top: 8px !important;
+            font-size: 12px !important;
+            color: #666;
+            line-height: 1.4;
+            border-top: 1px dashed #ddd;
+            padding-top: 8px;
+        }
+        .group-header {
+            width: 100%;
+            font-size: 22px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✈️ GlobeTrotter - Travel Planner</h1>
+    
+    <div class="controls">
+        <!-- Filter Option -->
+        <div class="control-group">
+            <label for="filterRegion">Filter by Region:</label>
+            <select id="filterRegion" onchange="renderData()">
+                <option value="All">All Regions</option>
+                <option value="Gujarat">Gujarat (India)</option>
+                <option value="India">India (Other)</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia">Asia</option>
+            </select>
+        </div>
+
+        <!-- Sort Option -->
+        <div class="control-group">
+            <label for="sortBy">Sort By:</label>
+            <select id="sortBy" onchange="renderData()">
+                <option value="name">Name (A-Z)</option>
+                <option value="priceLow">Budget (Low to High)</option>
+                <option value="rating">Rating (Highest)</option>
+            </select>
+        </div>
+
+        <!-- Group Option -->
+        <div class="control-group">
+            <label for="groupBy">Group By:</label>
+            <select id="groupBy" onchange="renderData()">
+                <option value="none">None</option>
+                <option value="country">Country</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="destinationsContainer" class="destinations-grid">
+        <!-- JS loads data here -->
+    </div>
+</div>
+
+<script>
+    // Destinations Data with Professional English Descriptions
+    const destinations = [
+        { 
+            name: 'Paris', 
+            country: 'France', 
+            region: 'Europe', 
+            budget: 1500, 
+            rating: 4.8,
+            image: 'https://loremflickr.com/800/600/paris,eiffel',
+            info: 'Famous for the iconic Eiffel Tower, world-class art museums, and romantic boulevard cafes.' 
+        },
+        { 
+            name: 'Tokyo', 
+            country: 'Japan', 
+            region: 'Asia', 
+            budget: 2000, 
+            rating: 4.9,
+            image: 'https://loremflickr.com/800/600/tokyo,city',
+            info: 'A vibrant blend of futuristic technology, neon-lit skyscrapers, and historic shrines.' 
+        },
+        { 
+            name: 'Rome', 
+            country: 'Italy', 
+            region: 'Europe', 
+            budget: 1200, 
+            rating: 4.7,
+            image: 'https://loremflickr.com/800/600/rome,colosseum',
+            info: 'Home to the majestic Colosseum, ancient Roman heritage, and authentic Italian gastronomy.' 
+        },
+        { 
+            name: 'Bangkok', 
+            country: 'Thailand', 
+            region: 'Asia', 
+            budget: 800, 
+            rating: 4.5,
+            image: 'https://loremflickr.com/800/600/bangkok,temple',
+            info: 'Renowned for its energetic street life, ornate Buddhist temples, and bustling night markets.' 
+        },
+        { 
+            name: 'Goa', 
+            country: 'India', 
+            region: 'India', 
+            budget: 400, 
+            rating: 4.6,
+            image: 'https://loremflickr.com/800/600/goa,beach',
+            info: 'Celebrated for scenic sun-kissed beaches, Portuguese-influenced architecture, and vibrant coastal vibes.' 
+        },
+        { 
+            name: 'Ahmedabad', 
+            country: 'India', 
+            region: 'Gujarat', 
+            budget: 250, 
+            rating: 4.7,
+            image: 'https://loremflickr.com/800/600/ahmedabad,riverfront',
+            info: 'A UNESCO World Heritage city featuring the modern Sabarmati Riverfront, Science City, and rich culture.' 
+        },
+        { 
+            name: 'Salangpur Temple', 
+            country: 'India', 
+            region: 'Gujarat', 
+            budget: 100, 
+            rating: 5.0,
+            image: 'https://loremflickr.com/800/600/temple,hanuman',
+            info: 'A renowned spiritual pilgrimage site dedicated to Lord Hanuman, offering divine tranquility.' 
+        },
+        { 
+            name: 'Botad', 
+            country: 'India', 
+            region: 'Gujarat', 
+            budget: 150, 
+            rating: 4.4,
+            image: 'https://loremflickr.com/800/600/india,city',
+            info: 'A key cultural hub in Gujarat providing seamless connectivity to famous pilgrimage destinations.' 
+        }
+    ];
+
+    function renderData() {
+        const filterVal = document.getElementById('filterRegion').value;
+        const sortVal = document.getElementById('sortBy').value;
+        const groupVal = document.getElementById('groupBy').value;
+        const container = document.getElementById('destinationsContainer');
+        
+        container.innerHTML = ''; 
+
+        // Filter Logic
+        let filteredData = destinations.filter(item => {
+            if (filterVal === 'All') return true;
+            return item.region === filterVal;
+        });
+
+        // Sort Logic
+        filteredData.sort((a, b) => {
+            if (sortVal === 'name') return a.name.localeCompare(b.name);
+            if (sortVal === 'priceLow') return a.budget - b.budget;
+            if (sortVal === 'rating') return b.rating - a.rating;
+        });
+
+        // Group Logic & Display
+        if (groupVal === 'country') {
+            const grouped = {};
+            filteredData.forEach(item => {
+                if (!grouped[item.country]) grouped[item.country] = [];
+                grouped[item.country].push(item);
+            });
+
+            for (const country in grouped) {
+                container.innerHTML += `<div class="group-header">📍 ${country}</div>`;
+                grouped[country].forEach(item => {
+                    container.innerHTML += createCard(item);
+                });
+            }
+        } else {
+            filteredData.forEach(item => {
+                container.innerHTML += createCard(item);
+            });
+        }
+    }
+
+    function createCard(item) {
+        return `
+            <div class="card">
+                <img src="${item.image}" alt="${item.name}">
+                <div class="card-content">
+                    <h3>${item.name}</h3>
+                    <p><strong>🌍 Region:</strong> ${item.region}</p>
+                    <p><strong>📍 Country:</strong> ${item.country}</p>
+                    <p><strong>💰 Est. Budget:</strong> $${item.budget}</p>
+                    <p><strong>⭐ Rating:</strong> ${item.rating} / 5</p>
+                    <p class="info-text">${item.info}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Load initial data
+    renderData();
+</script>
+
+</body>
+</html>

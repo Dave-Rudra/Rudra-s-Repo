@@ -73,13 +73,9 @@
   <!-- ================= MAIN CONTAINER ================= -->
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
 
-    <!-- SCREEN 1: LOGIN PAGE -->
+    <!-- SCREEN 1: LOGIN PAGE (PHOTO REMOVED) -->
     <section id="view-login" class="tab-view hidden max-w-sm mx-auto mt-12 space-y-6">
       <div class="bg-white border border-slate-300 rounded-md p-8 shadow-sm flex flex-col items-center">
-        <!-- Photo Placeholder -->
-        <div class="w-20 h-20 rounded-full border border-slate-400 bg-slate-100 flex items-center justify-center text-slate-400 text-xs mb-6">
-          Photo
-        </div>
         <form onsubmit="handleLogin(event)" class="w-full space-y-4">
           <div>
             <input type="email" id="loginEmail" required placeholder="Username / Email" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
@@ -94,13 +90,9 @@
       </div>
     </section>
 
-    <!-- SCREEN 2: REGISTRATION / SIGNUP PAGE -->
+    <!-- SCREEN 2: REGISTRATION / SIGNUP PAGE (PHOTO REMOVED) -->
     <section id="view-signup" class="tab-view hidden max-w-xl mx-auto mt-8 space-y-6">
       <div class="bg-white border border-slate-300 rounded-md p-8 shadow-sm flex flex-col items-center">
-        <!-- Photo Placeholder -->
-        <div class="w-24 h-24 rounded-full border border-slate-400 bg-slate-100 flex items-center justify-center text-slate-400 text-sm mb-8">
-          Photo
-        </div>
         <form onsubmit="handleSignup(event)" class="w-full space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input type="text" id="regFirstName" required placeholder="First Name" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
@@ -121,23 +113,21 @@
 
     <!-- SCREEN 3: MAIN LANDING PAGE -->
     <section id="view-dashboard" class="tab-view space-y-8">
-      <!-- Banner Image -->
-      <!-- Banner Image Section -->
-<div class="w-full h-64 md:h-80 rounded-xl overflow-hidden relative shadow-md flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 border border-slate-300">
-  
-  <!-- Subtle Travel Background Pattern (Optional) -->
-  <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200')] bg-cover bg-center mix-blend-overlay"></div>
-  
-  <!-- Text Content -->
-  <div class="relative z-10 text-center px-4">
-    <h1 class="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-2 md:mb-4 drop-shadow-lg">
-      Globe<span class="text-blue-500">Trotter</span>
-    </h1>
-    <p class="text-slate-200 text-base md:text-xl font-medium tracking-widest uppercase drop-shadow-md">
-      Smarter way to plan trips
-    </p>
-  </div>
-</div>
+      <!-- Banner Image Section (Traveling-Themed Scenery) -->
+      <div class="w-full h-64 md:h-80 rounded-xl overflow-hidden relative shadow-md flex flex-col items-center justify-center border border-slate-300">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/50 to-slate-900/20"></div>
+        
+        <!-- Text Content -->
+        <div class="relative z-10 text-center px-4">
+          <h1 class="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-2 md:mb-4 drop-shadow-lg">
+            Globe<span class="text-blue-500">Trotter</span>
+          </h1>
+          <p class="text-slate-200 text-base md:text-xl font-medium tracking-widest uppercase drop-shadow-md">
+            Smarter way to plan trips
+          </p>
+        </div>
+      </div>
 
       <!-- Search / Filter Bar -->
       <div class="flex flex-col sm:flex-row gap-2">
@@ -194,34 +184,28 @@
       </div>
     </section>
 
-    <!-- SCREEN 7: USER PROFILE PAGE -->
+    <!-- SCREEN 7: USER PROFILE PAGE (PHOTO REMOVED) -->
     <section id="view-profile" class="tab-view hidden space-y-8">
-      <div class="flex flex-col md:flex-row gap-8 items-start border-b border-slate-300 pb-8">
-        <div class="w-32 h-32 rounded-full border border-slate-400 bg-slate-200 flex items-center justify-center flex-shrink-0 text-slate-500 text-sm">
-          Image of the User
+      <div class="w-full bg-white border border-slate-300 rounded-md p-6">
+        <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only upon Signup)</h3>
+        
+        <!-- Notice if not logged in -->
+        <div id="profileLoggedOutMsg" class="text-sm text-slate-500 mb-4 italic">
+          You are currently viewing a guest profile. Please <a href="#" onclick="switchTab('signup')" class="text-blue-600 underline">Sign Up</a> to lock in your details.
         </div>
-        <div class="flex-1 w-full bg-white border border-slate-300 rounded-md p-6">
-          <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only upon Signup)</h3>
-          
-          <!-- Notice if not logged in -->
-          <div id="profileLoggedOutMsg" class="text-sm text-slate-500 mb-4 italic">
-            You are currently viewing a guest profile. Please <a href="#" onclick="switchTab('signup')" class="text-blue-600 underline">Sign Up</a> to lock in your details.
-          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">First Name</label>
-              <!-- Added readonly and disabled styling classes -->
-              <input type="text" id="profileFirstName" value="Guest" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Last Name</label>
-              <input type="text" id="profileLastName" value="User" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
-            </div>
-            <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
-              <input type="email" id="profileEmail" value="guest@example.com" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">First Name</label>
+            <input type="text" id="profileFirstName" value="Guest" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Last Name</label>
+            <input type="text" id="profileLastName" value="User" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
+            <input type="email" id="profileEmail" value="guest@example.com" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
           </div>
         </div>
       </div>
@@ -632,15 +616,41 @@
       document.getElementById('profileCompletedGrid').innerHTML = generateGrid(completed) || `<p class="text-xs text-slate-400 col-span-2">No previous trips.</p>`;
     }
 
-    // 4. Render Explore Catalog
+    // 4. Render Explore Catalog (With Working Filters)
     function renderCatalog() {
       const search = document.getElementById('catalogSearchInput').value.toLowerCase();
+      const costFilter = document.getElementById('catalogCostFilter').value;
+      const catFilter = document.getElementById('catalogCategoryFilter').value;
       
-      const mixedData = [
-          ...PRESET_CITIES.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
-          ...PRESET_ACTIVITIES.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
-      ].filter(item => item.title.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search));
+      // Filter Cities
+      const filteredCities = PRESET_CITIES.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) || c.country.toLowerCase().includes(search);
+        const matchesCost = costFilter === 'All' || c.cost === costFilter;
+        const matchesCat = catFilter === 'All'; 
+        return matchesSearch && matchesCost && matchesCat;
+      });
 
+      // Filter Activities
+      const filteredActivities = PRESET_ACTIVITIES.filter(a => {
+        const matchesSearch = a.name.toLowerCase().includes(search) || a.city.toLowerCase().includes(search);
+        const matchesCat = catFilter === 'All' || a.category === catFilter;
+        
+        let aCostTier = 'Budget';
+        if (a.cost >= 4000) aCostTier = 'Luxury';
+        else if (a.cost >= 2000) aCostTier = 'Moderate';
+
+        const matchesCost = costFilter === 'All' || aCostTier === costFilter;
+
+        return matchesSearch && matchesCat && matchesCost;
+      });
+
+      // Combine both filtered arrays
+      const mixedData = [
+          ...filteredCities.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
+          ...filteredActivities.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
+      ];
+
+      // Render to the screen
       document.getElementById('catalogList').innerHTML = mixedData.map(item => `
         <div class="w-full bg-white border border-slate-300 p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer">
            <div>
@@ -652,805 +662,7 @@
               <span class="border border-slate-300 px-2 py-0.5 rounded text-[10px] bg-slate-100">${item.extra}</span>
            </div>
         </div>
-      `).join('') || `<div class="text-sm text-slate-400 p-4 border border-slate-300 text-center">No matching options found.</div>`;
-    }
-
-    function renderModalSuggestions() {
-      document.getElementById('modalSuggestionsGrid').innerHTML = PRESET_CITIES.map(c => `
-         <div class="border border-slate-300 rounded-sm p-2 text-center h-24 relative overflow-hidden">
-            <img src="${c.image}" class="absolute inset-0 w-full h-full object-cover opacity-50"/>
-            <span class="relative z-10 font-bold text-slate-900 text-sm bg-white/80 px-2 py-1 rounded">${c.name}</span>
-         </div>
-      `).join('');
-    }
-
-    // 5. Render Detail Timeline
-    function openTripWorkspace(idx) {
-      activeTripIndex = idx;
-      const trip = trips[idx];
-      document.getElementById('detailTripTitle').innerText = `Itinerary: ${trip.title}`;
-      document.getElementById('detailTripTotal').innerText = `Total Estimated Budget: ₹${calculateTotalCost(trip)}`;
-      
-      renderTimeline();
-      switchTab('trip-detail');
-    }
-
-    function renderTimeline() {
-      const trip = trips[activeTripIndex];
-      let html = '';
-
-      if (trip.stops.length === 0) {
-          html = `<div class="w-full border border-dashed border-slate-400 p-8 text-center text-slate-500 rounded-md">Section 1: All necessary information about this section will appear here.<br>Use the button below to start building.</div>`;
-      } else {
-          trip.stops.forEach((stop, sIdx) => {
-            html += `
-              <div class="relative bg-white border border-slate-300 rounded-md mb-8 shadow-sm">
-                <div class="bg-slate-100 border-b border-slate-300 p-4 flex justify-between items-center">
-                   <div>
-                     <h3 class="font-bold text-slate-800 text-base">Section ${sIdx + 1}: ${stop.city}</h3>
-                     <p class="text-xs text-slate-500">Date Range: ${stop.startDate} to ${stop.endDate}</p>
-                   </div>
-                   <div class="flex gap-2">
-                     <button onclick="openAddActivityModal(${sIdx})" class="border border-slate-400 bg-white text-xs px-3 py-1 font-bold rounded-sm">+ Add Activity</button>
-                     <button onclick="removeStop(${sIdx})" class="text-red-500 font-bold text-xs px-2">✕</button>
-                   </div>
-                </div>
-                <div class="p-4 space-y-3">
-                   ${stop.activities.length === 0 ? '<p class="text-xs text-slate-400 text-center py-2">No physical activities added yet.</p>' : ''}
-                   ${stop.activities.map((a, aIdx) => `
-                     <div class="grid grid-cols-12 gap-4 items-center border border-slate-200 p-2 rounded-sm bg-slate-50">
-                        <div class="col-span-2 text-center border-r border-slate-300 pr-2">
-                          <span class="block border border-slate-300 bg-white text-xs font-bold py-1">Day ${a.dayNumber}</span>
-                        </div>
-                        <div class="col-span-7 pl-2">
-                           <p class="font-semibold text-sm text-slate-800">${a.name}</p>
-                           <p class="text-[10px] text-slate-500 uppercase tracking-wide">${a.category}</p>
-                        </div>
-                        <div class="col-span-3 text-right flex justify-end items-center gap-2">
-                           <span class="border border-slate-300 bg-white px-2 py-1 text-xs font-bold">₹${a.cost}</span>
-                           <button onclick="removeActivity(${sIdx}, ${aIdx})" class="text-slate-400 hover:text-red-500 text-xs">✕</button>
-                        </div>
-                     </div>
-                   `).join('')}
-                </div>
-              </div>
-              ${sIdx < trip.stops.length - 1 ? `<div class="w-full flex justify-center -mt-8 mb-2"><div class="h-6 border-l-2 border-slate-800"></div></div><div class="w-full flex justify-center mb-6"><div class="border-t-2 border-slate-800 w-2 transform rotate-45 mt-[-2px]"></div><div class="border-t-2 border-slate-800 w-2 transform -rotate-45 mt-[-2px] ml-[-8px]"></div></div>` : ''}
-            `;
-          });
-      }
-      document.getElementById('itineraryTimeline').innerHTML = html;
-    }
-
-    // Data Handlers
-    function handleCreateTrip(e) {
-      e.preventDefault();
-      trips.unshift({
-        id: 't-' + Date.now(),
-        title: document.getElementById('formTripTitle').value,
-        startDate: document.getElementById('formTripStart').value,
-        endDate: document.getElementById('formTripEnd').value,
-        image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400',
-        isCompleted: false,
-        stops: []
-      });
-      closeModal('createTripModal');
-      e.target.reset();
-      saveState();
-      openTripWorkspace(0);
-    }
-
-    function handleAddStop(e) {
-      e.preventDefault();
-      trips[activeTripIndex].stops.push({
-        city: document.getElementById('formStopCity').value,
-        startDate: document.getElementById('formStopStart').value,
-        endDate: document.getElementById('formStopEnd').value,
-        activities: []
-      });
-      closeModal('addStopModal');
-      e.target.reset();
-      saveState();
-      openTripWorkspace(activeTripIndex);
-    }
-
-    function openAddActivityModal(stopIdx) {
-      document.getElementById('formTargetStopIdx').value = stopIdx;
-      openModal('addActivityModal');
-    }
-
-    function handleAddActivity(e) {
-      e.preventDefault();
-      const sIdx = document.getElementById('formTargetStopIdx').value;
-      trips[activeTripIndex].stops[sIdx].activities.push({
-        name: document.getElementById('formActName').value,
-        category: document.getElementById('formActCategory').value,
-        cost: Number(document.getElementById('formActCost').value),
-        dayNumber: Number(document.getElementById('formActDay').value || 1)
-      });
-      closeModal('addActivityModal');
-      e.target.reset();
-      saveState();
-      openTripWorkspace(activeTripIndex);
-    }
-
-    function removeStop(sIdx) {
-      if(confirm('Delete section?')) {
-        trips[activeTripIndex].stops.splice(sIdx, 1);
-        saveState();
-        openTripWorkspace(activeTripIndex);
-      }
-    }
-
-    function removeActivity(sIdx, aIdx) {
-      trips[activeTripIndex].stops[sIdx].activities.splice(aIdx, 1);
-      saveState();
-      openTripWorkspace(activeTripIndex);
-    }
-
-    function openShareModal() {
-      openModal('shareModal');
-    }
-
-    // Init
-    updateAuthState(); // Load user session
-    saveState(); // Render trips
-    switchTab('dashboard'); // Start on dashboard
-  </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GlobeTrotter — Smart Travel Planning</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: { 50: '#f8fafc', 100: '#f1f5f9', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="bg-brand-50 text-slate-900 font-sans min-h-screen flex flex-col">
-
-<!-- ================= NAVBAR ================= -->
-  <header class="bg-white border-b border-slate-300 sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-      
-      <!-- Logo Section -->
-      <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="switchTab('dashboard')">
-        <!-- Custom Globe GT Logo -->
-        <div class="relative w-9 h-9 flex items-center justify-center rounded-full bg-brand-50 border-2 border-brand-600 shadow-sm">
-          <!-- Subtle inner circle for a "globe" feel -->
-          <div class="absolute w-5 h-full border border-brand-200 rounded-full opacity-60"></div>
-          <!-- "GT" Text -->
-          <span class="relative z-10 font-black text-brand-700 text-xs tracking-tighter">GT</span>
-          <!-- Plane flying over -->
-          <span class="absolute -top-2 -right-2 text-base transform rotate-12 drop-shadow-md z-20">✈️</span>
-        </div>
-        <span class="text-xl font-bold tracking-tight text-slate-800">GlobeTrotter</span>
-      </div>
-
-      <!-- Center Navigation Links -->
-      <nav class="hidden md:flex items-center space-x-4">
-        <button onclick="switchTab('dashboard')" class="nav-btn text-sm font-semibold text-slate-500 hover:text-slate-900" data-tab="dashboard">Home</button>
-        <button onclick="switchTab('my-trips')" class="nav-btn text-sm font-semibold text-slate-500 hover:text-slate-900" data-tab="my-trips">My Trips</button>
-        <button onclick="switchTab('explore')" class="nav-btn text-sm font-semibold text-slate-500 hover:text-slate-900" data-tab="explore">Search</button>
-        <button onclick="switchTab('profile')" class="nav-btn text-sm font-semibold text-slate-500 hover:text-slate-900" data-tab="profile">Profile</button>
-      </nav>
-
-      <!-- Auth State Wrapper -->
-      <div class="shrink-0">
-        <!-- Logged Out State -->
-        <div id="nav-logged-out" class="flex items-center space-x-2 sm:space-x-3">
-          <button onclick="switchTab('login')" class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition border border-slate-300 px-3 py-1.5 rounded-md">
-            Log in
-          </button>
-          <button onclick="switchTab('signup')" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-3 py-1.5 rounded-md transition shadow-sm">
-            Sign up
-          </button>
-        </div>
-        <!-- Logged In State -->
-        <div id="nav-logged-in" class="hidden items-center space-x-3">
-          <span id="nav-welcome-text" class="text-sm font-bold text-slate-700 hidden sm:inline-block"></span>
-          <button onclick="handleLogout()" class="text-sm font-semibold text-rose-600 hover:text-rose-800 transition border border-slate-300 px-3 py-1.5 rounded-md hover:bg-rose-50">
-            Log out
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </header>
-  <!-- ================= MAIN CONTAINER ================= -->
-  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
-
-    <!-- SCREEN 1: LOGIN PAGE (Profile Photo Removed) -->
-    <section id="view-login" class="tab-view hidden max-w-sm mx-auto mt-12 space-y-6">
-      <div class="bg-white border border-slate-300 rounded-md p-8 shadow-sm flex flex-col items-center">
-        <h2 class="text-xl font-bold text-slate-800 mb-6">Login</h2>
-        <form onsubmit="handleLogin(event)" class="w-full space-y-4">
-          <div>
-            <input type="email" id="loginEmail" required placeholder="Username / Email" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
-          </div>
-          <div>
-            <input type="password" id="loginPassword" required placeholder="Password" class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none focus:border-slate-500 text-center" />
-          </div>
-          <div class="pt-4 flex justify-center">
-            <button type="submit" class="border border-slate-400 text-slate-800 font-semibold px-8 py-2 rounded-sm hover:bg-slate-50 transition">Login</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- SCREEN 2: REGISTRATION / SIGNUP PAGE (Profile Photo Removed) -->
-    <section id="view-signup" class="tab-view hidden max-w-xl mx-auto mt-8 space-y-6">
-      <div class="bg-white border border-slate-300 rounded-md p-8 shadow-sm flex flex-col items-center">
-        <h2 class="text-xl font-bold text-slate-800 mb-6">Create Account</h2>
-        <form onsubmit="handleSignup(event)" class="w-full space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input type="text" id="regFirstName" required placeholder="First Name" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
-            <input type="text" id="regLastName" required placeholder="Last Name" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
-            <input type="email" id="regEmail" required placeholder="Email Address" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
-            <input type="tel" id="regPhone" placeholder="Phone Number" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
-            <input type="text" id="regCity" placeholder="City" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
-            <input type="text" id="regCountry" placeholder="Country" class="border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none" />
-          </div>
-          <textarea id="regAdditional" rows="3" placeholder="Additional Information..." class="w-full border border-slate-300 rounded-sm px-4 py-2 text-sm outline-none"></textarea>
-          
-          <div class="pt-4 flex justify-center">
-            <button type="submit" class="border border-slate-400 text-slate-800 font-semibold px-8 py-2 rounded-sm hover:bg-slate-50 transition">Register User</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- SCREEN 3: MAIN LANDING PAGE -->
-    <section id="view-dashboard" class="tab-view space-y-8">
-      <!-- Banner Image Section (Updated with high-resolution travel scenery) -->
-      <div class="w-full h-64 md:h-80 rounded-xl overflow-hidden relative shadow-md flex flex-col items-center justify-center border border-slate-300">
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/40 to-transparent"></div>
-        
-        <!-- Text Content -->
-        <div class="relative z-10 text-center px-4">
-          <h1 class="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-2 md:mb-4 drop-shadow-lg">
-            Globe<span class="text-blue-400">Trotter</span>
-          </h1>
-          <p class="text-slate-200 text-base md:text-xl font-medium tracking-widest uppercase drop-shadow-md">
-            Smarter way to plan trips
-          </p>
-        </div>
-      </div>
-
-      <!-- Search / Filter Bar -->
-      <div class="flex flex-col sm:flex-row gap-2">
-        <input type="text" placeholder="Search places..." class="flex-1 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none focus:border-slate-500" />
-        <div class="flex gap-2">
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Group by</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
-        </div>
-      </div>
-
-      <!-- Top Regional Selections -->
-      <div>
-        <h2 class="text-lg font-bold border-b border-slate-300 pb-2 mb-4 text-slate-800">Top Regional Selections</h2>
-        <div id="dashDestinationsGrid" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
-      </div>
-
-      <!-- Previous Trips -->
-      <div class="relative pb-12">
-        <h2 class="text-lg font-bold border-b border-slate-300 pb-2 mb-4 text-slate-800">Previous Trips</h2>
-        <div id="dashTripsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-        
-        <!-- FAB button -->
-        <button onclick="requireAuth('createTripModal')" class="absolute bottom-0 right-0 bg-white border border-slate-300 shadow-md hover:bg-slate-50 text-slate-800 font-semibold text-sm px-4 py-2 rounded-md flex items-center gap-2">
-          <span>+ Plan a Trip</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- SCREEN 6: USER TRIP LISTING -->
-    <section id="view-my-trips" class="tab-view hidden space-y-6">
-      <div class="flex flex-col sm:flex-row gap-2 justify-between">
-        <input type="text" placeholder="Search trips..." class="w-full md:w-1/2 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none" />
-        <div class="flex gap-2">
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Group by</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="text-sm font-bold uppercase text-slate-500 border-b border-slate-300 pb-1 mb-3">Ongoing</h2>
-        <div class="space-y-3">
-           <div class="w-full bg-white border border-slate-300 rounded-md p-4 text-center text-slate-400 text-sm">No ongoing trips.</div>
-        </div>
-      </div>
-      <div>
-        <h2 class="text-sm font-bold uppercase text-slate-500 border-b border-slate-300 pb-1 mb-3">Up-coming</h2>
-        <div id="upcomingTripsList" class="space-y-3"></div>
-      </div>
-      <div>
-        <h2 class="text-sm font-bold uppercase text-slate-500 border-b border-slate-300 pb-1 mb-3">Completed</h2>
-        <div id="completedTripsList" class="space-y-3"></div>
-      </div>
-    </section>
-
-    <!-- SCREEN 7: USER PROFILE PAGE -->
-    <section id="view-profile" class="tab-view hidden space-y-8">
-      <div class="flex flex-col md:flex-row gap-8 items-start border-b border-slate-300 pb-8">
-        <div class="w-32 h-32 rounded-full border border-slate-400 bg-slate-200 flex items-center justify-center flex-shrink-0 text-slate-500 text-sm">
-          Image of the User
-        </div>
-        <div class="flex-1 w-full bg-white border border-slate-300 rounded-md p-6">
-          <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">User Details (Read-Only upon Signup)</h3>
-          
-          <!-- Notice if not logged in -->
-          <div id="profileLoggedOutMsg" class="text-sm text-slate-500 mb-4 italic">
-            You are currently viewing a guest profile. Please <a href="#" onclick="switchTab('signup')" class="text-blue-600 underline">Sign Up</a> to lock in your details.
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">First Name</label>
-              <input type="text" id="profileFirstName" value="Guest" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Last Name</label>
-              <input type="text" id="profileLastName" value="User" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
-            </div>
-            <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
-              <input type="email" id="profileEmail" value="guest@example.com" readonly class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm outline-none bg-slate-50 text-slate-500 cursor-not-allowed" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="text-lg font-bold mb-4 text-slate-800">Preplanned Trips</h2>
-        <div id="profileUpcomingGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-      </div>
-      <div>
-        <h2 class="text-lg font-bold mb-4 text-slate-800">Previous Trips</h2>
-        <div id="profileCompletedGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-      </div>
-    </section>
-
-    <!-- SCREEN 8: ACTIVITY SEARCH / CITY SEARCH PAGE -->
-    <section id="view-explore" class="tab-view hidden space-y-6">
-      <div class="flex flex-col sm:flex-row gap-2 justify-between">
-        <input type="text" id="catalogSearchInput" oninput="renderCatalog()" placeholder="Search activities or cities..." class="w-full md:w-1/2 border border-slate-300 rounded-md px-4 py-2 text-sm outline-none" />
-        <div class="flex gap-2">
-          <select id="catalogCostFilter" onchange="renderCatalog()" class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none">
-             <option value="All">Group by Cost</option>
-             <option value="Budget">Budget</option>
-             <option value="Moderate">Moderate</option>
-             <option value="Luxury">Luxury</option>
-          </select>
-          <select id="catalogCategoryFilter" onchange="renderCatalog()" class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none">
-             <option value="All">Filter by Category</option>
-             <option value="Sightseeing">Sightseeing</option>
-             <option value="Food">Food & Dining</option>
-             <option value="Adventure">Adventure</option>
-          </select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="text-sm font-bold text-slate-800 border-b border-slate-300 pb-1 mb-3">Results</h2>
-        <div id="catalogList" class="space-y-2"></div>
-      </div>
-    </section>
-
-    <!-- SCREEN 9: ITINERARY VIEW SCREEN -->
-    <section id="view-trip-detail" class="tab-view hidden space-y-6">
-      <div class="flex flex-col sm:flex-row gap-2 justify-between items-center border-b border-slate-300 pb-4">
-        <button onclick="switchTab('my-trips')" class="text-sm font-semibold text-slate-500 border border-slate-300 px-3 py-1.5 rounded-md hover:bg-slate-100">
-          ← Back
-        </button>
-        <div class="flex gap-2">
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Group by</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Filter</option></select>
-          <select class="border border-slate-300 rounded-md px-3 py-2 text-sm outline-none"><option>Sort by</option></select>
-          <button onclick="openShareModal()" class="bg-white border border-slate-300 px-3 py-1.5 rounded-md text-sm font-bold">Share</button>
-        </div>
-      </div>
-
-      <div class="text-center">
-        <h1 id="detailTripTitle" class="text-2xl font-bold text-slate-800">Itinerary for a selected place</h1>
-        <p id="detailTripTotal" class="text-sm font-semibold text-slate-500 mt-1">Total Estimated Budget: ₹0</p>
-      </div>
-
-      <div class="max-w-4xl mx-auto mt-8">
-        <div class="grid grid-cols-12 gap-4 border-b-2 border-slate-800 pb-2 mb-6">
-           <div class="col-span-2 font-bold text-slate-600 text-center">Day / Step</div>
-           <div class="col-span-7 font-bold text-slate-600 pl-4">Physical Activity</div>
-           <div class="col-span-3 font-bold text-slate-600 text-right pr-4">Expense</div>
-        </div>
-        
-        <div id="itineraryTimeline" class="space-y-6"></div>
-
-        <div class="text-center mt-8">
-          <button onclick="openModal('addStopModal')" class="bg-white border border-slate-400 text-slate-800 font-semibold px-6 py-2 rounded-md hover:bg-slate-50">
-            + Add another Section (Place)
-          </button>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ================= MODALS ================= -->
-
-  <!-- MODAL: CREATE TRIP (Screen 4 Layout) -->
-  <div id="createTripModal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-md border border-slate-300 max-w-2xl w-full p-6 shadow-xl h-[80vh] overflow-y-auto flex flex-col">
-      <div class="flex justify-between items-center border-b border-slate-300 pb-3 mb-4">
-        <h3 class="text-lg font-bold text-slate-800">Create a new Trip</h3>
-        <button onclick="closeModal('createTripModal')" class="text-slate-500 font-bold">✕</button>
-      </div>
-      
-      <form onsubmit="handleCreateTrip(event)" class="space-y-4 mb-8">
-        <div class="flex flex-col sm:flex-row items-center gap-4">
-           <label class="w-32 text-sm font-semibold text-slate-700">Plan a new trip:</label>
-           <input id="formTripTitle" required placeholder="Name of Trip..." class="flex-1 border border-slate-300 rounded-sm px-3 py-1.5 text-sm outline-none" />
-        </div>
-        <div class="flex flex-col sm:flex-row items-center gap-4">
-           <label class="w-32 text-sm font-semibold text-slate-700">Start Date:</label>
-           <input type="date" id="formTripStart" required class="flex-1 border border-slate-300 rounded-sm px-3 py-1.5 text-sm outline-none" />
-        </div>
-        <div class="flex flex-col sm:flex-row items-center gap-4">
-           <label class="w-32 text-sm font-semibold text-slate-700">End Date:</label>
-           <input type="date" id="formTripEnd" required class="flex-1 border border-slate-300 rounded-sm px-3 py-1.5 text-sm outline-none" />
-        </div>
-        <div class="flex justify-end pt-2">
-          <button type="submit" class="bg-white border border-slate-400 text-slate-800 font-semibold text-sm px-6 py-2 rounded-sm shadow-sm hover:bg-slate-50">Save Base Trip</button>
-        </div>
-      </form>
-
-      <div class="border-t border-slate-300 pt-4 flex-1">
-        <h4 class="text-sm font-bold text-slate-700 mb-4">Suggestion for Places To Visit / Activities To perform</h4>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="modalSuggestionsGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: ADD STOP / SECTION (Screen 5 component) -->
-  <div id="addStopModal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white border border-slate-300 rounded-md max-w-md w-full p-6 shadow-xl">
-      <div class="flex justify-between items-center mb-4 border-b border-slate-300 pb-2">
-        <h3 class="text-lg font-bold text-slate-800">Add Section (City/Stop)</h3>
-        <button onclick="closeModal('addStopModal')" class="text-slate-400 font-bold">✕</button>
-      </div>
-      <form onsubmit="handleAddStop(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Select a Place</label>
-          <input id="formStopCity" required placeholder="e.g. Kyoto" class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Start Date</label>
-            <input type="date" id="formStopStart" required class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">End Date</label>
-            <input type="date" id="formStopEnd" required class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none" />
-          </div>
-        </div>
-        <div class="flex justify-end pt-2">
-          <button type="submit" class="border border-slate-400 bg-white text-slate-800 font-semibold text-sm px-4 py-2 rounded-sm hover:bg-slate-50">Add Section</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: ADD ACTIVITY -->
-  <div id="addActivityModal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white border border-slate-300 rounded-md max-w-md w-full p-6 shadow-xl">
-      <div class="flex justify-between items-center mb-4 border-b border-slate-300 pb-2">
-        <h3 class="text-lg font-bold text-slate-800">Add Physical Activity</h3>
-        <button onclick="closeModal('addActivityModal')" class="text-slate-400 font-bold">✕</button>
-      </div>
-      <form onsubmit="handleAddActivity(event)" class="space-y-4">
-        <input type="hidden" id="formTargetStopIdx" />
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Activity Name</label>
-          <input id="formActName" required placeholder="Activity Details..." class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
-            <select id="formActCategory" class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none">
-              <option value="Sightseeing">Sightseeing</option>
-              <option value="Food">Food</option>
-              <option value="Stay">Stay</option>
-              <option value="Transport">Transport</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Budget (₹)</label>
-            <input type="number" id="formActCost" required placeholder="2500" class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none" />
-          </div>
-        </div>
-        <div>
-           <label class="block text-xs font-semibold text-slate-600 mb-1">Day #</label>
-           <input type="number" id="formActDay" value="1" min="1" class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm outline-none" />
-        </div>
-        <div class="flex justify-end pt-2">
-          <button type="submit" class="border border-slate-400 bg-white text-slate-800 font-semibold text-sm px-4 py-2 rounded-sm hover:bg-slate-50">Save Activity</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: SHARE -->
-  <div id="shareModal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white border border-slate-300 rounded-md max-w-sm w-full p-6 shadow-xl">
-      <h3 class="text-lg font-bold text-slate-800 mb-2 border-b border-slate-300 pb-2">Share Link</h3>
-      <input type="text" value="https://globetrotter.app/share/t-1" readonly class="w-full border border-slate-300 rounded-sm px-3 py-2 text-sm mb-4 bg-slate-50 outline-none"/>
-      <button onclick="closeModal('shareModal'); alert('Copied!')" class="w-full border border-slate-400 bg-white text-slate-800 font-semibold text-sm px-4 py-2 rounded-sm hover:bg-slate-50">Copy Link</button>
-    </div>
-  </div>
-
-  <!-- ================= JAVASCRIPT LOGIC ================= -->
-  <script>
-    // Master Data
-    const PRESET_CITIES = [
-      { name: 'Paris', country: 'France', cost: 'Luxury', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400' },
-      { name: 'Tokyo', country: 'Japan', cost: 'Moderate', image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400' },
-      { name: 'Rome', country: 'Italy', cost: 'Moderate', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400' },
-      { name: 'Bangkok', country: 'Thailand', cost: 'Budget', image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400' },
-      { name: 'Goa', country: 'India', cost: 'Moderate', image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400' }
-    ];
-
-    const PRESET_ACTIVITIES = [
-      { name: 'Eiffel Tower Summit', city: 'Paris', category: 'Sightseeing', cost: 3000 },
-      { name: 'Louvre Museum Tour', city: 'Paris', category: 'Sightseeing', cost: 1800 },
-      { name: 'Shibuya Crossing', city: 'Tokyo', category: 'Food', cost: 3500 },
-      { name: 'Colosseum Guided Tour', city: 'Rome', category: 'Sightseeing', cost: 2500 },
-      { name: 'Grand Palace', city: 'Bangkok', category: 'Sightseeing', cost: 1200 },
-      { name: 'Baga Beach Watersports', city: 'Goa', category: 'Adventure', cost: 1500 }
-    ];
-
-    // State Management
-    let currentUser = JSON.parse(localStorage.getItem('globetrotter_user')) || null;
-    let trips = JSON.parse(localStorage.getItem('globetrotter_trips')) || [
-      {
-        id: 't-1',
-        title: 'Euro Odyssey',
-        startDate: '2026-09-10',
-        endDate: '2026-09-18',
-        image: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400',
-        isCompleted: false,
-        stops: []
-      }
-    ];
-
-    let activeTripIndex = 0;
-
-    // ----- AUTHENTICATION LOGIC -----
-    function handleSignup(e) {
-      e.preventDefault();
-      const user = {
-        firstName: document.getElementById('regFirstName').value,
-        lastName: document.getElementById('regLastName').value,
-        email: document.getElementById('regEmail').value
-      };
-      
-      localStorage.setItem('globetrotter_user', JSON.stringify(user));
-      currentUser = user;
-      updateAuthState();
-      switchTab('dashboard');
-      e.target.reset();
-    }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value;
-      const user = { firstName: 'User', lastName: '', email: email };
-      
-      localStorage.setItem('globetrotter_user', JSON.stringify(user));
-      currentUser = user;
-      updateAuthState();
-      switchTab('dashboard');
-      e.target.reset();
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('globetrotter_user');
-      currentUser = null;
-      updateAuthState();
-      switchTab('dashboard');
-    }
-
-    function updateAuthState() {
-      const loggedOutNav = document.getElementById('nav-logged-out');
-      const loggedInNav = document.getElementById('nav-logged-in');
-      const welcomeText = document.getElementById('nav-welcome-text');
-      const profileMsg = document.getElementById('profileLoggedOutMsg');
-
-      // Profile Input Fields
-      const fNameInput = document.getElementById('profileFirstName');
-      const lNameInput = document.getElementById('profileLastName');
-      const emailInput = document.getElementById('profileEmail');
-
-      if (currentUser) {
-        // Switch Navbar
-        loggedOutNav.classList.add('hidden');
-        loggedInNav.classList.remove('hidden');
-        loggedInNav.classList.add('flex');
-        welcomeText.innerText = `Hi, ${currentUser.firstName}!`;
-        
-        // Update & Lock Profile Page Details
-        profileMsg.classList.add('hidden');
-        fNameInput.value = currentUser.firstName;
-        lNameInput.value = currentUser.lastName;
-        emailInput.value = currentUser.email;
-      } else {
-        // Switch Navbar
-        loggedInNav.classList.add('hidden');
-        loggedInNav.classList.remove('flex');
-        loggedOutNav.classList.remove('hidden');
-        
-        // Revert Profile Page to Guest
-        profileMsg.classList.remove('hidden');
-        fNameInput.value = 'Guest';
-        lNameInput.value = 'User';
-        emailInput.value = 'guest@example.com';
-      }
-    }
-
-    // Function to check if user is logged in before opening modals
-    function requireAuth(modalId) {
-      if (!currentUser) {
-        alert("You must be logged in to plan a trip.");
-        switchTab('login');
-      } else {
-        openModal(modalId);
-      }
-    }
-
-    // ----- APP STATE LOGIC -----
-    function saveState() {
-      localStorage.setItem('globetrotter_trips', JSON.stringify(trips));
-      renderDashboard();
-      renderMyTrips();
-    }
-
-    // Tabs
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-slate-900', 'border-b-2', 'border-slate-800'));
-
-      const target = document.getElementById(`view-${tabId}`);
-      if (target) target.classList.remove('hidden');
-
-      const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
-      if (activeBtn) activeBtn.classList.add('text-slate-900', 'border-b-2', 'border-slate-800');
-
-      if (tabId === 'dashboard') renderDashboard();
-      if (tabId === 'my-trips') renderMyTrips();
-      if (tabId === 'explore') renderCatalog();
-      if (tabId === 'profile') renderProfileGrid();
-    }
-
-    // Modals
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      if (id === 'createTripModal') renderModalSuggestions();
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-      document.getElementById(id).classList.remove('flex');
-    }
-
-    function calculateTotalCost(trip) {
-      return trip.stops.reduce((acc, stop) => acc + stop.activities.reduce((sAcc, act) => sAcc + Number(act.cost || 0), 0), 0);
-    }
-
-    // 1. Render Dashboard
-    function renderDashboard() {
-      document.getElementById('dashDestinationsGrid').innerHTML = PRESET_CITIES.map(c => `
-        <div class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer h-32 relative">
-          <img src="${c.image}" class="w-full h-full object-cover" />
-          <div class="absolute bottom-0 w-full bg-white/90 p-1 text-center border-t border-slate-300 text-xs font-bold">${c.name}</div>
-        </div>
-      `).join('');
-
-      document.getElementById('dashTripsGrid').innerHTML = trips.slice(0, 3).map((trip, idx) => `
-        <div onclick="openTripWorkspace(${idx})" class="border border-slate-300 rounded-md overflow-hidden hover:shadow-md cursor-pointer flex flex-col h-48 bg-white">
-          <div class="h-2/3 bg-slate-200">
-             <img src="${trip.image}" class="w-full h-full object-cover" />
-          </div>
-          <div class="p-2 flex-1 flex flex-col justify-center text-center">
-             <h4 class="font-bold text-sm text-slate-800 truncate">${trip.title}</h4>
-             <p class="text-xs text-slate-500">${trip.startDate}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // 2. Render My Trips
-    function renderMyTrips() {
-      const upcoming = trips.filter(t => !t.isCompleted);
-      const completed = trips.filter(t => t.isCompleted);
-
-      const renderList = (list) => list.map(t => `
-        <div onclick="openTripWorkspace(${trips.indexOf(t)})" class="w-full bg-white border border-slate-300 rounded-md p-4 flex justify-between items-center hover:shadow-md cursor-pointer">
-           <div>
-              <h4 class="font-bold text-slate-800">${t.title}</h4>
-              <p class="text-xs text-slate-500">Data Range: ${t.startDate} to ${t.endDate}</p>
-           </div>
-           <div class="text-right">
-              <span class="border border-slate-300 px-3 py-1 rounded text-xs font-semibold bg-slate-50">Budget: ₹${calculateTotalCost(t)}</span>
-           </div>
-        </div>
-      `).join('') || `<div class="w-full bg-white border border-slate-300 rounded-md p-4 text-center text-slate-400 text-sm">No trips in this section.</div>`;
-
-      document.getElementById('upcomingTripsList').innerHTML = renderList(upcoming);
-      document.getElementById('completedTripsList').innerHTML = renderList(completed);
-    }
-
-    // 3. Render Profile
-    function renderProfileGrid() {
-      const upcoming = trips.filter(t => !t.isCompleted);
-      const completed = trips.filter(t => t.isCompleted);
-
-      const generateGrid = (list) => list.map(t => `
-        <div class="border border-slate-300 rounded-md p-2 text-center bg-white">
-           <div class="h-24 bg-slate-200 rounded-sm mb-2"><img src="${t.image}" class="w-full h-full object-cover rounded-sm"/></div>
-           <h5 class="text-xs font-bold truncate mb-2">${t.title}</h5>
-           <button onclick="openTripWorkspace(${trips.indexOf(t)})" class="text-[10px] uppercase border border-slate-400 px-3 py-1 rounded-sm hover:bg-slate-50 font-bold">View</button>
-        </div>
-      `).join('');
-
-      document.getElementById('profileUpcomingGrid').innerHTML = generateGrid(upcoming) || `<p class="text-xs text-slate-400 col-span-2">No preplanned trips.</p>`;
-      document.getElementById('profileCompletedGrid').innerHTML = generateGrid(completed) || `<p class="text-xs text-slate-400 col-span-2">No previous trips.</p>`;
-    }
-
-    // 4. Render Explore Catalog
-    function renderCatalog() {
-      const search = document.getElementById('catalogSearchInput').value.toLowerCase();
-      
-      const mixedData = [
-          ...PRESET_CITIES.map(c => ({ title: c.name, desc: c.country, type: 'City', extra: c.cost })),
-          ...PRESET_ACTIVITIES.map(a => ({ title: a.name, desc: a.city, type: 'Activity', extra: `₹${a.cost} - ${a.category}` }))
-      ].filter(item => item.title.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search));
-
-      document.getElementById('catalogList').innerHTML = mixedData.map(item => `
-        <div class="w-full bg-white border border-slate-300 p-4 flex justify-between items-center hover:bg-slate-50 cursor-pointer">
-           <div>
-              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">${item.type}</p>
-              <h4 class="font-bold text-slate-800 text-sm">${item.title}</h4>
-           </div>
-           <div class="text-right">
-              <p class="text-xs text-slate-600 font-semibold mb-1">${item.desc}</p>
-              <span class="border border-slate-300 px-2 py-0.5 rounded text-[10px] bg-slate-100">${item.extra}</span>
-           </div>
-        </div>
-      `).join('') || `<div class="text-sm text-slate-400 p-4 border border-slate-300 text-center">No matching options found.</div>`;
-    }
-
-    function renderModalSuggestions() {
-      document.getElementById('modalSuggestionsGrid').innerHTML = PRESET_CITIES.map(c => `
-         <div class="border border-slate-300 rounded-sm p-2 text-center h-24 relative overflow-hidden">
-            <img src="${c.image}" class="absolute inset-0 w-full h-full object-cover opacity-50"/>
-            <span class="relative z-10 font-bold text-slate-900 text-sm bg-white/80 px-2 py-1 rounded">${c.name}</span>
-         </div>
-      `).join('');
+      `).join('') || `<div class="text-sm text-slate-400 p-4 border border-slate-300 text-center bg-white rounded-md">No matching options found.</div>`;
     }
 
     // 5. Render Detail Timeline

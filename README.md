@@ -14,7 +14,6 @@ Built for the **Odoo x LDCE Ahmedabad Hackathon 26**.
 * **Rudra (Dave-Rudra)** - Developer
 * **Pushkar Patel (Pushkar-1505)** - Developer
 * **Karan Limbadiya (Karanlimbadiya777)** - Testing and Bug Reporting
-```markdown
 # ✈️ GlobeTrotter — Smart Travel Planning 🌍
 
 > An editorial travel route builder and intelligent itinerary planner engineered to transform destination discovery into organized, calm, and actionable journeys.
